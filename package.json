@@ -1,8 +1,9 @@
 {
   "name": "@gct256/sitetool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "site build tool",
   "main": "index",
+  "typings": "types/index.d.ts",
   "scripts": {
     "build": "rollup -c",
     "test": "jest",
