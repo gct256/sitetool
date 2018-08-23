@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--@exec param('title', 'Title')-->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>
+    <!--@echo title-->
+  </title>
+  <link rel="stylesheet" href="<!--@echo rel_root -->/css/style.css">
+</head>
+
+<body>
+  <!--@include inc/_include.html-->
+  <p>Test</p>
+  <p><img src="<!--@echo rel_root -->/images/image.gif"></p>
+  <p><img src="<!--@echo rel_root -->/images/image.jpeg"></p>
+  <p><img src="<!--@echo rel_root -->/images/image.jpg"></p>
+  <p><img src="<!--@echo rel_root -->/images/image.png"></p>
+  <p><img src="<!--@echo rel_root -->/images/image.svgz"></p>
+  <p><img src="<!--@echo rel_root -->/images/image2.svgz"></p>
+  <div>Test</div>
+
+  <script src="<!--@echo rel_root -->/js/script.js"></script>
+</body>
+
+</html>

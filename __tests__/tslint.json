@@ -1,0 +1,23 @@
+{
+  "extends": ["tslint:latest", "tslint-react"],
+  "rules": {
+    "trailing-comma": [true, {"singleline": "never", "multiline": "never"}],
+    "quotemark": [true, "single", "jsx-double"],
+    "no-relative-imports": false,
+    "no-import-side-effect": [true, { "ignore-module": "(\\.html|\\.css)$" }],
+    "variable-name": [true, "allow-pascal-case"],
+    "mocha-no-side-effect-code": false,
+    "ordered-imports": [
+      true,
+      {
+        "named-imports-order": "lowercase-last"
+      }
+    ],
+    "no-backbone-get-set-outside-model": false,
+    "object-literal-sort-keys": false,
+    "cyclomatic-complexity": [true, 30],
+    "no-submodule-imports": [true],
+    "number-literal-format": false,
+    "interface-name": [true, "never-prefix"]
+  }
+}

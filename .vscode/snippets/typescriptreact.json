@@ -1,0 +1,35 @@
+{
+  "action type": {
+    "prefix": "actiontype",
+    "body": ["const $1: '$2/$1' = '$2/$1';"]
+  },
+  "import react": {
+    "prefix": "react",
+    "body": ["import * as React from 'react';"]
+  },
+  "connector": {
+    "prefix": "connector",
+    "body": [
+      "import { connect } from 'react-redux';",
+      "",
+      "import { AppDispatch, AppState } from '../app';",
+      "",
+      "function mapStateToProps(state: AppState) {",
+      "  return {",
+      "  };",
+      "}",
+      "",
+      "function mapDispatchToProps(dispatch: AppDispatch) {",
+      "  return {",
+      "  };",
+      "}",
+      "",
+      "type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;",
+      "",
+      "class $1Class extends React.Component<Props> {",
+      "}",
+      "",
+      "export const $1 = connect(mapStateToProps, mapDispatchToProps)($1Class);"
+    ]
+  }
+}

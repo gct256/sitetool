@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="300" height="200"
+  xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+<g>
+<rect id="rect" height="200" width="300" y="0" x="0"
+  stroke-width="1" stroke="rgb(0,0,255)" fill="none"/>
+<line id="line1" x1="0" y1="0" x2="300" y2="200"
+  stroke-width="1" stroke="rgb(0,0,255)" fill="none"/>
+<line id="line2" x1="0" y1="200" x2="300" y2="0"
+  stroke-width="1" stroke="rgb(0,0,255)" fill="none"/>
+<text text-anchor="middle" font-family="sans-serif"
+  font-size="24" id="text1" x="150.0" y="100.0"
+  stroke="#000000" fill="#000000">300x200</text>
+</g>
+</svg>
