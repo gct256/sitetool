@@ -25,10 +25,10 @@ export class Runtime extends Emitter {
   public async openDirectory(dirPath: string) {
     if (this.config.isLoaded()) await this.close();
 
-    this.emit('opening');
+    this.emit(EventType.OPENING);
     try {
       await this.config.loadDirectory(dirPath);
-      this.emit('opened');
+      this.emit(EventType.OPENED);
     } catch (error) {
       this.emitForLog('ERROR', error);
     }
@@ -50,6 +50,14 @@ export class Runtime extends Emitter {
       this.emit(EventType.CLOSING);
       await this.config.unload();
       this.emit(EventType.CLOSED);
+    }
+  }
+
+  public async preBuild() {
+    if (!this.config.isLoaded()) {
+      this.emitForLog('WARN', 'config not loaded');
+    } else {
+      await this.distributor.preBuild(this.config);
     }
   }
 
