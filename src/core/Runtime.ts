@@ -85,7 +85,7 @@ export class Runtime extends Emitter {
     }
   }
 
-  public getConfig(): Config | null {
+  public getConfig(): Config {
     return this.config;
   }
 
