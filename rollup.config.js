@@ -27,12 +27,12 @@ export default [
       file: './index.js',
       format: 'cjs'
     }
+  },
+  {
+    ...base,
+    output: {
+      file: './index.mjs',
+      format: 'es'
+    }
   }
-  // {
-  //   ...base,
-  //   output: {
-  //     file: './index.mjs',
-  //     format: 'es'
-  //   }
-  // }
 ];
