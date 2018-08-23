@@ -6,8 +6,9 @@ async function main() {
   runtime.on(sitetool.EventType.ALL, (...args) => console.log(args));
 
   await runtime.openDirectory('.');
-  await runtime.distribute();
-  await runtime.close();
+  await runtime.preBuild();
+  await runtime.startWatcher();
+  await runtime.startServer();
 }
 
 main().catch(console.error);
