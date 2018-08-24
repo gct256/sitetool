@@ -38,26 +38,26 @@ async function isNeedUpdate(
 
 export class Builder {
   private emitter: Emitter;
-  private names: string[];
+  private funcNames: string[];
   private funcs: BuilderFunc[];
 
-  private constructor(emitter: Emitter, names: string[]) {
+  private constructor(emitter: Emitter, funcNames: string[]) {
     this.emitter = emitter;
-    this.names = [];
+    this.funcNames = [];
     this.funcs = [];
-    for (const name of names) {
-      const func = funcMap.get(name);
+    for (const funcName of funcNames) {
+      const func = funcMap.get(funcName);
       if (func !== undefined) {
-        this.names.push(name);
+        this.funcNames.push(funcName);
         this.funcs.push(func);
       }
     }
   }
 
-  public static getBuilder(names: string[], emitter: Emitter) {
-    const builder = builderCache.get(names);
+  public static getBuilder(funcNames: string[], emitter: Emitter) {
+    const builder = builderCache.get(funcNames);
 
-    return builder === undefined ? new Builder(emitter, names) : builder;
+    return builder === undefined ? new Builder(emitter, funcNames) : builder;
   }
 
   public async build(target: Target, force: boolean): Promise<void> {
@@ -71,7 +71,7 @@ export class Builder {
       (prev: Promise<BuildContainer>, func: BuilderFunc, index: number) => {
         return prev.then((container: BuildContainer) => {
           const next = func(container, target);
-          this.emitter.emitForTransform(this.names[index], target.relPath);
+          this.emitter.emitForTransform(this.funcNames[index], target.relPath);
 
           return next;
         });

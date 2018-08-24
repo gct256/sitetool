@@ -25,7 +25,7 @@ export interface ConfigData {
     pattern?: RegExp | RegExp[];
     ignore?: RegExp | RegExp[];
     extname?: string;
-    builder?:
+    func?:
       | string
       | string[]
       | {
@@ -43,7 +43,7 @@ export interface ConfigDirectory {
   dist: string;
 }
 
-export interface ConfigBuilder {
+export interface ConfigFunc {
   work: string[];
   dist: string[];
 }

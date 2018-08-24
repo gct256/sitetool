@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { ConfigBuilder, ConfigData, ConfigDirectory } from './Config';
+import { ConfigData, ConfigDirectory, ConfigFunc } from './Config';
 import { Rule, RuleInterface } from './Rule';
 
 export function getDirectoryPath(
@@ -31,31 +31,31 @@ export function getDefaultConfig(root: string): ConfigData {
         name: 'html',
         pattern: /\.html$/i,
         ignore: /^_/i,
-        builder: ['file-preprocess', 'html-format']
+        func: ['file-preprocess', 'html-format']
       },
       {
         name: 'sass',
         pattern: /\.(sass|scss)$/i,
         ignore: /^_/i,
         extname: '.css',
-        builder: ['sass-compile', 'css-postcss']
+        func: ['sass-compile', 'css-postcss']
       },
       {
         name: 'js',
         pattern: /\.js$/i,
         ignore: /\.min\.js$/i,
-        builder: ['js-minify']
+        func: ['js-minify']
       },
       {
         name: 'image',
         pattern: /\.(gif|png|jpg|jpeg|svgz)$/i,
-        builder: ['image-minify']
+        func: ['image-minify']
       },
       {
         name: 'image+gzip',
         pattern: /\.(svg)$/i,
         extname: '.svgz',
-        builder: ['image-minify', 'file-gzip']
+        func: ['image-minify', 'file-gzip']
       }
     ],
     option: {
@@ -104,8 +104,8 @@ function getBuilderNameList(list: any): string[] {
 }
 
 // tslint:disable-next-line:no-any
-function getBuilder(builder: any): ConfigBuilder {
-  const result: ConfigBuilder = { work: [], dist: [] };
+function getBuilder(builder: any): ConfigFunc {
+  const result: ConfigFunc = { work: [], dist: [] };
 
   if (
     typeof builder === 'object' &&
