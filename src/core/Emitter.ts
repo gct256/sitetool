@@ -49,8 +49,8 @@ export interface EventMap {
   SERVER_STOPPING: RuntimeEvent;
   SERVER_STOPPED: RuntimeEvent;
 
-  PRE_BUILDING: RuntimeEvent;
-  PRE_BUILT: RuntimeEvent;
+  BUILDING: RuntimeEvent;
+  BUILT: RuntimeEvent;
   CLEANING: RuntimeEvent;
   CLEANED: RuntimeEvent;
   DISTRIBUTING: RuntimeEvent;

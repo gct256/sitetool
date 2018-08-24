@@ -13,11 +13,11 @@ export class Distributor {
     this.emitter = emitter;
   }
 
-  public async preBuild(config: Config) {
-    this.emitter.emit('PRE_BUILDING', { error: false });
+  public async build(config: Config) {
+    this.emitter.emit('BUILDING', { error: false });
     await rmrf(config.directory.work, config.getRoot(), this.emitter);
-    await this.build(config, false);
-    this.emitter.emit('PRE_BUILT', { error: false });
+    await this.distributeMain(config, false);
+    this.emitter.emit('BUILT', { error: false });
   }
 
   public async distribute(config: Config) {
@@ -25,14 +25,14 @@ export class Distributor {
     const dirPath = config.directory.dist;
     try {
       await rmrf(dirPath, config.getRoot(), this.emitter);
-      await this.build(config, true);
+      await this.distributeMain(config, true);
       this.emitter.emit('DISTRIBUTED', { dirPath, error: false });
     } catch (error) {
       this.emitter.emit('DISTRIBUTED', { dirPath, error });
     }
   }
 
-  private async build(config: Config, distribute: boolean) {
+  private async distributeMain(config: Config, distribute: boolean) {
     const filePaths = await globby.call(
       globby,
       path.join(config.directory.src, '**', '*')

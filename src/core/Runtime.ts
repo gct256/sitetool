@@ -59,11 +59,11 @@ export class Runtime extends Emitter {
     }
   }
 
-  public async preBuild() {
+  public async build() {
     if (!this.config.isLoaded()) {
       this.emit('MESSAGE', 'config not loaded');
     } else {
-      await this.distributor.preBuild(this.config);
+      await this.distributor.build(this.config);
     }
   }
 
