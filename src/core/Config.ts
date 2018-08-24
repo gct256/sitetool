@@ -1,5 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as requireFromString from 'require-from-string';
 
 import {
   getDefaultConfig,
@@ -10,6 +11,8 @@ import {
 } from './configUtils';
 import { Emitter } from './Emitter';
 import { Rule } from './Rule';
+
+const defaultConfigFile: string = 'sitetool.config.js';
 
 export interface ConfigData {
   directory?: {
@@ -49,6 +52,8 @@ export class Config {
   private root: string;
   private configFile: string | null;
   private ruleArray: Rule[];
+  // tslint:disable-next-line:no-any
+  // private optionMap: { [key: string]: any };
 
   private loaded: boolean;
   private readonly emitter: Emitter;
@@ -58,6 +63,7 @@ export class Config {
     this.configFile = '';
     this.directory = getDefaultDirectory('');
     this.ruleArray = [];
+    // this.optionMap = {};
 
     this.loaded = false;
     this.emitter = emitter;
@@ -72,12 +78,19 @@ export class Config {
       throw new Error(`not directory: ${dirPath}`);
     }
 
-    this.emitter.emitForLog(
-      'INFO',
-      `load directory with default config: ${dirPath}`
-    );
+    const config = path.resolve(dirPath, defaultConfigFile);
+    // tslint:disable-next-line:no-console
+    if (await fs.pathExists(config)) {
+      this.emitter.emitForLog('INFO', `load directory with ${config}`);
+      await this.load(dirPath, config);
+    } else {
+      this.emitter.emitForLog(
+        'INFO',
+        `load directory without config (use default config): ${dirPath}`
+      );
 
-    this.load(dirPath, null, getDefaultConfig(dirPath));
+      await this.load(dirPath, null);
+    }
   }
 
   public async loadConfigFile(filePath: string) {
@@ -92,22 +105,7 @@ export class Config {
       return this.loadDirectory(root);
     }
 
-    // tslint:disable-next-line:non-literal-require no-any
-    const data: any = require(filePath);
-
-    if (typeof data !== 'object' || data === null) {
-      this.emitter.emitForLog(
-        'WARN',
-        `config file format invalid: ${filePath}`
-      );
-      this.emitter.emitForLog('WARN', 'use default config');
-
-      return this.loadDirectory(root);
-    }
-
-    this.emitter.emitForLog('INFO', `load config file: ${filePath}`);
-
-    this.load(root, filePath, data);
+    await this.load(root, filePath);
   }
 
   public async unload() {
@@ -152,11 +150,36 @@ export class Config {
     return this.loaded;
   }
 
-  private load(root: string, configFile: string | null, data: ConfigData) {
+  private async load(root: string, configFile: string | null) {
     this.root = root;
     this.configFile = configFile;
     Object.assign(this.directory, getDefaultDirectory(root));
     this.ruleArray = [];
+
+    let data: ConfigData;
+    if (configFile !== null) {
+      // tslint:disable-next-line:no-any
+      let tmp: any;
+      try {
+        tmp = requireFromString(await fs.readFile(configFile, 'utf8'));
+      } catch (e) {
+        tmp = null;
+      }
+
+      if (typeof tmp !== 'object' || tmp === null) {
+        this.emitter.emitForLog(
+          'WARN',
+          `config file format invalid: ${configFile}`
+        );
+        this.emitter.emitForLog('WARN', 'use default config');
+        data = getDefaultConfig(root);
+      } else {
+        data = tmp;
+        this.emitter.emitForLog('INFO', `load config file: ${configFile}`);
+      }
+    } else {
+      data = getDefaultConfig(root);
+    }
 
     const directory = data.directory;
     if (typeof directory === 'object' && directory !== null) {
