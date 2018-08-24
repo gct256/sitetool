@@ -5,7 +5,7 @@ export interface RuleInterface {
   pattern: RegExp[];
   ignore: RegExp[];
   extname: string | null;
-  builder: {
+  func: {
     work: string[];
     dist: string[];
   };
@@ -16,17 +16,17 @@ export class Rule implements RuleInterface {
   public readonly pattern: RegExp[];
   public readonly ignore: RegExp[];
   public readonly extname: string | null;
-  public readonly builder: {
+  public readonly func: {
     work: string[];
     dist: string[];
   };
 
-  constructor({ name, pattern, ignore, extname, builder }: RuleInterface) {
+  constructor({ name, pattern, ignore, extname, func }: RuleInterface) {
     this.name = name;
     this.pattern = pattern;
     this.ignore = ignore;
     this.extname = extname;
-    this.builder = builder;
+    this.func = func;
   }
 
   public test(fileName: string): RuleResult {
@@ -55,6 +55,6 @@ export class Rule implements RuleInterface {
   }
 
   public getBuilder(distribute: boolean): string[] {
-    return distribute ? this.builder.dist : this.builder.work;
+    return distribute ? this.func.dist : this.func.work;
   }
 }

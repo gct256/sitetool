@@ -88,7 +88,7 @@ function getPattern(pattern: any): RegExp[] {
 }
 
 // tslint:disable-next-line:no-any
-function getBuilderNameList(list: any): string[] {
+function getFuncNameList(list: any): string[] {
   if (typeof list === 'string') return [list];
 
   if (Array.isArray(list)) {
@@ -104,18 +104,14 @@ function getBuilderNameList(list: any): string[] {
 }
 
 // tslint:disable-next-line:no-any
-function getBuilder(builder: any): ConfigFunc {
+function getFunc(func: any): ConfigFunc {
   const result: ConfigFunc = { work: [], dist: [] };
 
-  if (
-    typeof builder === 'object' &&
-    !Array.isArray(builder) &&
-    builder !== null
-  ) {
-    if ('work' in builder) result.work = getBuilderNameList(builder.work);
-    if ('dist' in builder) result.dist = getBuilderNameList(builder.dist);
+  if (typeof func === 'object' && !Array.isArray(func) && func !== null) {
+    if ('work' in func) result.work = getFuncNameList(func.work);
+    if ('dist' in func) result.dist = getFuncNameList(func.dist);
   } else {
-    result.work = getBuilderNameList(builder);
+    result.work = getFuncNameList(func);
     result.dist = [...result.work];
   }
 
@@ -130,7 +126,7 @@ export function getRule(rule: any): Rule | null {
       pattern: [],
       ignore: [],
       extname: null,
-      builder: {
+      func: {
         work: [],
         dist: []
       }
@@ -140,7 +136,7 @@ export function getRule(rule: any): Rule | null {
     if ('pattern' in rule) result.pattern = getPattern(rule.pattern);
     if ('ignore' in rule) result.ignore = getPattern(rule.ignore);
     if (typeof rule.extname === 'string') result.extname = rule.extname;
-    if ('builder' in rule) result.builder = getBuilder(rule.builder);
+    if ('func' in rule) result.func = getFunc(rule.func);
 
     return new Rule(result);
   }
@@ -154,7 +150,7 @@ export function getDefaultRule(): Rule {
     pattern: [],
     ignore: [],
     extname: null,
-    builder: {
+    func: {
       work: [],
       dist: []
     }
