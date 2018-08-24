@@ -9,51 +9,64 @@ import stylefmt from 'stylefmt';
 import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';
 
-const plugins = [
-  cssMqpacker(),
-  postcssSorting({
-    order: [],
-    'properties-order': 'alphabetical'
-  }),
-  autoprefixer.call(autoprefixer, {
+// tslint:disable-next-line:no-any
+const defaultOptions: { [key: string]: any } = {
+  autoprefixer: {
     remove: false,
-    browsers: [
-      '> 5%',
-      'Android >= 2.2',
-      'iOS >= 5',
-      'IE >= 9',
-      'Safari >= 5',
-      'not dead'
-    ]
-  })
+    browsers: ['> 5%', 'not dead']
+  }
+};
+
+const processerCache: [postcss.Processor | null, postcss.Processor | null] = [
+  null,
+  null
 ];
 
-const workProcesser = postcss.call(postcss, [...plugins, stylefmt()]);
-const destProcesser = postcss.call(postcss, [
-  ...plugins,
-  cssnano.call(cssnano)
-]);
+function getProcesser(target: Target): postcss.Processor {
+  const index = target.distribute ? 1 : 0;
+  const cache = processerCache[index];
+  if (cache !== null) return cache;
+
+  const processor: postcss.Processor = postcss.call(postcss, [
+    cssMqpacker(),
+    postcssSorting({
+      order: [],
+      'properties-order': 'alphabetical'
+    }),
+    autoprefixer.call(autoprefixer, {
+      ...defaultOptions.autoprefixer,
+      ...target.config.getOption('cssPostcss')
+    }),
+    target.distribute ? cssnano.call(cssnano) : stylefmt()
+  ]);
+  processerCache[index] = processor;
+
+  return processor;
+}
 
 export async function cssPostcss(
   container: BuildContainer,
   target: Target
 ): Promise<BuildContainer> {
-  const result: postcss.Result = await (target.distribute
-    ? destProcesser
-    : workProcesser
-  ).process(container.buffer.toString('utf8'), {
+  const options: postcss.ProcessOptions = {
     from: path.basename(target.srcPath),
-    to: path.basename(target.outPath),
-    map: target.distribute
-      ? false
-      : {
-          prev:
-            container.sourceMap === null
-              ? null
-              : container.sourceMap.toString('utf-8'),
-          inline: false
-        }
-  });
+    to: path.basename(target.outPath)
+  };
+
+  if (!target.distribute) {
+    options.map = {
+      prev:
+        container.sourceMap === null
+          ? null
+          : container.sourceMap.toString('utf-8'),
+      inline: false
+    };
+  }
+
+  const result: postcss.Result = await getProcesser(target).process(
+    container.buffer.toString('utf8'),
+    options
+  );
 
   return {
     buffer: new Buffer(result.css, 'utf8'),

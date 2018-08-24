@@ -33,6 +33,8 @@ export interface ConfigData {
           dist?: string | string[];
         };
   }[];
+  // tslint:disable-next-line:no-any
+  option?: { [key: string]: any };
 }
 
 export interface ConfigDirectory {
@@ -53,7 +55,7 @@ export class Config {
   private configFile: string | null;
   private ruleArray: Rule[];
   // tslint:disable-next-line:no-any
-  // private optionMap: { [key: string]: any };
+  private optionMap: { [key: string]: any };
 
   private loaded: boolean;
   private readonly emitter: Emitter;
@@ -63,7 +65,7 @@ export class Config {
     this.configFile = '';
     this.directory = getDefaultDirectory('');
     this.ruleArray = [];
-    // this.optionMap = {};
+    this.optionMap = {};
 
     this.loaded = false;
     this.emitter = emitter;
@@ -146,6 +148,11 @@ export class Config {
     return null;
   }
 
+  // tslint:disable-next-line:no-any
+  public getOption(name: string): object {
+    return name in this.optionMap ? this.optionMap[name] : {};
+  }
+
   public isLoaded(): boolean {
     return this.loaded;
   }
@@ -208,6 +215,11 @@ export class Config {
     }
 
     this.ruleArray.push(getDefaultRule());
+
+    const option = data.option;
+    if (typeof option === 'object' && option !== null) {
+      this.optionMap = JSON.parse(JSON.stringify(option));
+    }
 
     this.loaded = true;
   }

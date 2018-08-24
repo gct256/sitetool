@@ -47,14 +47,16 @@ export class Server {
 
         this.emitter.emit(EventType.SERVER_STARTING);
         this.busy = true;
-        this.server = create('server');
-        this.server.init(
+        const server = create('server');
+        this.server = server;
+        server.init(
           {
-            server: config.directory.work,
-            files: [path.join(config.directory.work, '**', '*')],
             open: false,
             logLevel: 'silent',
             reloadDebounce: 500,
+            ...config.getOption('server'),
+            server: config.directory.work,
+            files: [path.join(config.directory.work, '**', '*')],
             middleware: supportGzip
           },
           (error: Error) => {
@@ -66,12 +68,16 @@ export class Server {
             }
           }
         );
-        this.server.emitter.on('init', () => {
-          this.emitter.emit(EventType.SERVER_STARTED);
+        server.emitter.on('init', () => {
+          // tslint:disable-next-line:no-console
+          const port = server.getOption('port');
+          const urls = server.getOption('urls');
+
+          this.emitter.emit(EventType.SERVER_STARTED, { port, urls });
           this.busy = false;
           resolve();
         });
-        this.server.emitter.on('browser:reload', () => {
+        server.emitter.on('browser:reload', () => {
           this.emitter.emit(EventType.BROWSER_RELOADED);
         });
       }

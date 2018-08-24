@@ -57,7 +57,17 @@ export function getDefaultConfig(root: string): ConfigData {
         extname: '.svgz',
         builder: ['image-minify', 'file-gzip']
       }
-    ]
+    ],
+    option: {
+      'css-postcss': {
+        autoprefixer: {
+          browsers: ['> 5%', 'not dead']
+        }
+      },
+      server: {
+        port: 3000
+      }
+    }
   };
 }
 

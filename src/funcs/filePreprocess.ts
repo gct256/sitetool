@@ -19,6 +19,7 @@ export async function filePreprocess(
 ): Promise<BuildContainer> {
   const source: string = container.buffer.toString('utf8');
   const context: { [key: string]: string } = {
+    ...target.config.getOption('file-preprocess'),
     rel_root: getRelRoot(target)
   };
 
