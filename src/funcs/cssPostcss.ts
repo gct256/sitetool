@@ -72,6 +72,7 @@ export async function cssPostcss(
     buffer: new Buffer(result.css, 'utf8'),
     sourceMap: target.distribute
       ? null
-      : new Buffer(result.map.toString(), 'utf8')
+      : new Buffer(result.map.toString(), 'utf8'),
+    hasError: false
   };
 }

@@ -3,7 +3,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import * as path from 'path';
 
 import { Config } from './Config';
-import { Emitter, EventType } from './Emitter';
+import { Emitter } from './Emitter';
 
 function supportGzip(
   req: IncomingMessage,
@@ -45,7 +45,7 @@ export class Server {
       async (resolve: () => void, reject: (error: Error) => void) => {
         if (this.server !== null) await this.stop();
 
-        this.emitter.emit(EventType.SERVER_STARTING);
+        this.emitter.emit('SERVER_STARTING', { error: false });
         this.busy = true;
         const server = create('server');
         this.server = server;
@@ -61,24 +61,32 @@ export class Server {
           },
           (error: Error) => {
             if (error) {
-              this.emitter.emitForLog('ERROR', 'cannot start server');
-              this.emitter.emitForLog('ERROR', error);
+              this.emitter.emit('SERVER_STARTED', {
+                port: -1,
+                urls: new Map(),
+                error
+              });
               this.busy = false;
               reject(error);
             }
           }
         );
         server.emitter.on('init', () => {
-          // tslint:disable-next-line:no-console
           const port = server.getOption('port');
           const urls = server.getOption('urls');
 
-          this.emitter.emit(EventType.SERVER_STARTED, { port, urls });
+          this.emitter.emit('SERVER_STARTED', { port, urls, error: false });
           this.busy = false;
           resolve();
         });
+        // tslint:disable-next-line:no-any
+        server.emitter.on('file:reload', ({ ext }: { ext: string }) => {
+          if (ext === 'css') {
+            this.emitter.emit('BROWSER_RELOADED', { error: false });
+          }
+        });
         server.emitter.on('browser:reload', () => {
-          this.emitter.emit(EventType.BROWSER_RELOADED);
+          this.emitter.emit('BROWSER_RELOADED', { error: false });
         });
       }
     );
@@ -90,9 +98,9 @@ export class Server {
         resolve();
       } else {
         this.busy = true;
-        this.emitter.emit(EventType.SERVER_STOPPING);
+        this.emitter.emit('SERVER_STOPPING', { error: false });
         this.server.emitter.on('service:exit', () => {
-          this.emitter.emit(EventType.SERVER_STOPPED);
+          this.emitter.emit('SERVER_STOPPED', { error: false });
           this.server = null;
           this.busy = false;
           resolve();

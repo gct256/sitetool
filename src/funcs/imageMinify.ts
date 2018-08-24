@@ -22,5 +22,9 @@ export async function imageMinify(
     ]
   });
 
-  return { buffer: result, sourceMap: container.sourceMap };
+  return {
+    buffer: result,
+    sourceMap: container.sourceMap,
+    hasError: false
+  };
 }

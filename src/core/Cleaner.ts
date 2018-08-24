@@ -1,6 +1,6 @@
 import { rmrf } from '../utils';
 import { Config } from './Config';
-import { Emitter, EventType } from './Emitter';
+import { Emitter } from './Emitter';
 
 export class Cleaner {
   private emitter: Emitter;
@@ -11,12 +11,12 @@ export class Cleaner {
 
   public async clean(config: Config) {
     if (config.isLoaded()) {
-      this.emitter.emit(EventType.CLEANING);
+      this.emitter.emit('CLEANING', { error: false });
 
       await rmrf(config.directory.work, config.getRoot(), this.emitter);
       await rmrf(config.directory.dist, config.getRoot(), this.emitter);
 
-      this.emitter.emit(EventType.CLEANED);
+      this.emitter.emit('CLEANED', { error: false });
     }
   }
 }

@@ -13,6 +13,7 @@ export async function jsMinify(
 
   return {
     buffer: new Buffer(result.code, 'utf8'),
-    sourceMap: container.sourceMap
+    sourceMap: container.sourceMap,
+    hasError: false
   };
 }

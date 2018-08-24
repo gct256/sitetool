@@ -4,7 +4,7 @@ import * as path from 'path';
 import { rmrf } from '../utils';
 import { buildFile } from './Builder';
 import { Config } from './Config';
-import { Emitter, EventType } from './Emitter';
+import { Emitter } from './Emitter';
 
 export class Distributor {
   private emitter: Emitter;
@@ -14,17 +14,22 @@ export class Distributor {
   }
 
   public async preBuild(config: Config) {
-    this.emitter.emit(EventType.PRE_BUILDING);
+    this.emitter.emit('PRE_BUILDING', { error: false });
     await rmrf(config.directory.work, config.getRoot(), this.emitter);
     await this.build(config, false);
-    this.emitter.emit(EventType.PRE_BUILT);
+    this.emitter.emit('PRE_BUILT', { error: false });
   }
 
   public async distribute(config: Config) {
-    this.emitter.emit(EventType.DISTRIBUTING);
-    await rmrf(config.directory.dist, config.getRoot(), this.emitter);
-    await this.build(config, true);
-    this.emitter.emit(EventType.DISTRIBUTED);
+    this.emitter.emit('DISTRIBUTING', { error: false });
+    const dirPath = config.directory.dist;
+    try {
+      await rmrf(dirPath, config.getRoot(), this.emitter);
+      await this.build(config, true);
+      this.emitter.emit('DISTRIBUTED', { dirPath, error: false });
+    } catch (error) {
+      this.emitter.emit('DISTRIBUTED', { dirPath, error });
+    }
   }
 
   private async build(config: Config, distribute: boolean) {

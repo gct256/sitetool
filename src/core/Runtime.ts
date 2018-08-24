@@ -1,7 +1,7 @@
 import { Cleaner } from './Cleaner';
 import { Config } from './Config';
 import { Distributor } from './Distributor';
-import { Emitter, EventType } from './Emitter';
+import { Emitter } from './Emitter';
 import { Server } from './Server';
 import { Watcher } from './Watcher';
 
@@ -20,26 +20,32 @@ export class Runtime extends Emitter {
     this.server = new Server(this);
     this.cleaner = new Cleaner(this);
     this.distributor = new Distributor(this);
+
+    this.emit('READY', { error: false });
   }
 
   public async openDirectory(dirPath: string) {
     if (this.config.isLoaded()) await this.close();
 
-    this.emit(EventType.OPENING);
+    this.emit('OPENING', { error: false });
     try {
       await this.config.loadDirectory(dirPath);
-      this.emit(EventType.OPENED);
+      this.emit('OPENED', { error: false });
     } catch (error) {
-      this.emitForLog('ERROR', error);
+      this.emit('OPENED', { error });
     }
   }
 
   public async openConfigFile(filePath: string) {
     if (this.config.isLoaded()) await this.close();
 
-    this.emit(EventType.OPENING);
-    await this.config.loadConfigFile(filePath);
-    this.emit(EventType.OPENED);
+    this.emit('OPENING', { error: false });
+    try {
+      await this.config.loadConfigFile(filePath);
+      this.emit('OPENED', { error: false });
+    } catch (error) {
+      this.emit('OPENED', { error });
+    }
   }
 
   public async close() {
@@ -47,15 +53,15 @@ export class Runtime extends Emitter {
       await this.stopWatcher();
       await this.stopServer();
 
-      this.emit(EventType.CLOSING);
+      this.emit('CLOSING', { error: false });
       await this.config.unload();
-      this.emit(EventType.CLOSED);
+      this.emit('CLOSED', { error: false });
     }
   }
 
   public async preBuild() {
     if (!this.config.isLoaded()) {
-      this.emitForLog('WARN', 'config not loaded');
+      this.emit('MESSAGE', 'config not loaded');
     } else {
       await this.distributor.preBuild(this.config);
     }
@@ -63,7 +69,7 @@ export class Runtime extends Emitter {
 
   public async startWatcher() {
     if (!this.config.isLoaded()) {
-      this.emitForLog('WARN', 'config not loaded');
+      this.emit('MESSAGE', 'config not loaded');
     } else {
       await this.watcher.start(this.config);
     }
@@ -71,7 +77,7 @@ export class Runtime extends Emitter {
 
   public async stopWatcher() {
     if (!this.config.isLoaded()) {
-      this.emitForLog('WARN', 'config not loaded');
+      this.emit('MESSAGE', 'config not loaded');
     } else {
       await this.watcher.stop();
     }
@@ -79,7 +85,7 @@ export class Runtime extends Emitter {
 
   public async startServer() {
     if (!this.config.isLoaded()) {
-      this.emitForLog('WARN', 'config not loaded');
+      this.emit('MESSAGE', 'config not loaded');
     } else {
       await this.server.start(this.config);
     }
@@ -87,7 +93,7 @@ export class Runtime extends Emitter {
 
   public async stopServer() {
     if (!this.config.isLoaded()) {
-      this.emitForLog('WARN', 'config not loaded');
+      this.emit('MESSAGE', 'config not loaded');
     } else {
       await this.server.stop();
     }
@@ -99,7 +105,7 @@ export class Runtime extends Emitter {
 
   public async clean() {
     if (!this.config.isLoaded()) {
-      this.emitForLog('WARN', 'config not loaded');
+      this.emit('MESSAGE', 'config not loaded');
     } else {
       this.execute(async () => {
         await this.cleaner.clean(this.config);
@@ -109,7 +115,7 @@ export class Runtime extends Emitter {
 
   public async distribute() {
     if (!this.config.isLoaded()) {
-      this.emitForLog('WARN', 'config not loaded');
+      this.emit('MESSAGE', 'config not loaded');
     } else {
       await this.execute(async () => {
         await this.distributor.distribute(this.config);

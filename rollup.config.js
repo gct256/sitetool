@@ -2,6 +2,8 @@ import typescript2 from 'rollup-plugin-typescript2';
 
 import pkg from './package.json';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const base = {
   input: './src/index.ts',
   plugins: [
@@ -20,19 +22,24 @@ const base = {
   external: ['events', 'path', 'zlib', ...Object.keys(pkg.dependencies)]
 };
 
-export default [
+const targets = [
   {
     ...base,
     output: {
       file: './index.js',
       format: 'cjs'
     }
-  },
-  {
+  }
+];
+
+if (isProduction) {
+  targets.push({
     ...base,
     output: {
       file: './index.mjs',
       format: 'es'
     }
-  }
-];
+  });
+}
+
+export default targets;

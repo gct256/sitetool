@@ -83,11 +83,11 @@ export class Config {
     const config = path.resolve(dirPath, defaultConfigFile);
     // tslint:disable-next-line:no-console
     if (await fs.pathExists(config)) {
-      this.emitter.emitForLog('INFO', `load directory with ${config}`);
+      this.emitter.emit('MESSAGE', `load directory with ${config}`);
       await this.load(dirPath, config);
     } else {
-      this.emitter.emitForLog(
-        'INFO',
+      this.emitter.emit(
+        'MESSAGE',
         `load directory without config (use default config): ${dirPath}`
       );
 
@@ -101,8 +101,8 @@ export class Config {
     const root: string = path.dirname(filePath);
 
     if (!(await fs.pathExists(filePath))) {
-      this.emitter.emitForLog('WARN', `config file not found: ${filePath}`);
-      this.emitter.emitForLog('WARN', 'use default config');
+      this.emitter.emit('MESSAGE', `config file not found: ${filePath}`);
+      this.emitter.emit('MESSAGE', 'use default config');
 
       return this.loadDirectory(root);
     }
@@ -116,7 +116,7 @@ export class Config {
     Object.assign(this.directory, getDefaultDirectory(''));
     this.ruleArray = [];
 
-    this.emitter.emitForLog('INFO', 'config unload');
+    this.emitter.emit('MESSAGE', 'config unload');
     this.loaded = false;
   }
 
@@ -174,15 +174,15 @@ export class Config {
       }
 
       if (typeof tmp !== 'object' || tmp === null) {
-        this.emitter.emitForLog(
-          'WARN',
+        this.emitter.emit(
+          'MESSAGE',
           `config file format invalid: ${configFile}`
         );
-        this.emitter.emitForLog('WARN', 'use default config');
+        this.emitter.emit('MESSAGE', 'use default config');
         data = getDefaultConfig(root);
       } else {
         data = tmp;
-        this.emitter.emitForLog('INFO', `load config file: ${configFile}`);
+        this.emitter.emit('MESSAGE', `load config file: ${configFile}`);
       }
     } else {
       data = getDefaultConfig(root);
@@ -200,8 +200,8 @@ export class Config {
         this.directory.dist = getDirectoryPath(root, directory.dist, 'dist');
       }
     } else {
-      this.emitter.emitForLog('WARN', 'config.directory not defined.');
-      this.emitter.emitForLog('WARN', 'use default directory layout.');
+      this.emitter.emit('MESSAGE', 'config.directory not defined.');
+      this.emitter.emit('MESSAGE', 'use default directory layout.');
     }
 
     const ruleArray = data.rule;
@@ -211,7 +211,7 @@ export class Config {
         if (r !== null) this.ruleArray.push(r);
       }
     } else {
-      this.emitter.emitForLog('WARN', 'config.rule not defined.');
+      this.emitter.emit('MESSAGE', 'config.rule not defined.');
     }
 
     this.ruleArray.push(getDefaultRule());

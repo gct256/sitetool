@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { buildFile } from './Builder';
 import { Config } from './Config';
-import { Emitter, EventType } from './Emitter';
+import { Emitter } from './Emitter';
 
 export class Watcher {
   private emitter: Emitter;
@@ -20,7 +20,7 @@ export class Watcher {
     return new Promise(async (resolve: () => void) => {
       if (this.watcher !== null) await this.stop();
 
-      this.emitter.emit(EventType.WATCHER_STARTING);
+      this.emitter.emit('WATCHER_STARTING', { error: false });
       this.busy = true;
       this.watcher = watch([path.join(config.directory.src, '**', '*')]);
       this.watcher.once('ready', () => {
@@ -31,7 +31,7 @@ export class Watcher {
         this.watcher.on('change', (filePath: string) =>
           buildFile(filePath, false, true, config, this.emitter)
         );
-        this.emitter.emit(EventType.WATCHER_STARTED);
+        this.emitter.emit('WATCHER_STARTED', { error: false });
         this.busy = false;
         resolve();
       });
@@ -41,9 +41,9 @@ export class Watcher {
   public async stop() {
     if (this.watcher !== null) {
       this.busy = true;
-      this.emitter.emit(EventType.WATCHER_STOPPING);
+      this.emitter.emit('WATCHER_STOPPING', { error: false });
       this.watcher.close();
-      this.emitter.emit(EventType.WATCHER_STOPPED);
+      this.emitter.emit('WATCHER_STOPPED', { error: false });
       this.busy = false;
       this.watcher = null;
     }

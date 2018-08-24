@@ -1,4 +1,5 @@
 import * as nodeSass from 'node-sass';
+import * as path from 'path';
 
 import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';
@@ -13,6 +14,10 @@ export async function sassCompile(
         {
           data: container.buffer.toString('utf8'),
           outputStyle: 'expanded',
+          includePaths: [
+            target.config.directory.src,
+            path.dirname(target.srcPath)
+          ],
           sourceMap: target.distribute
             ? false
             : container.sourceMap === null
@@ -25,7 +30,8 @@ export async function sassCompile(
           } else {
             resolve({
               buffer: result.css,
-              sourceMap: target.distribute ? result.map : null
+              sourceMap: target.distribute ? result.map : null,
+              hasError: false
             });
           }
         }

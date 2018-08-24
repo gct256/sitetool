@@ -16,7 +16,8 @@ export async function fileGzip(
         } else {
           resolve({
             buffer: result,
-            sourceMap: container.sourceMap
+            sourceMap: container.sourceMap,
+            hasError: false
           });
         }
       });

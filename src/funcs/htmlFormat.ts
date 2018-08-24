@@ -13,6 +13,7 @@ export async function htmlFormat(
 
   return {
     buffer: new Buffer(result, 'utf8'),
-    sourceMap: container.sourceMap
+    sourceMap: container.sourceMap,
+    hasError: false
   };
 }

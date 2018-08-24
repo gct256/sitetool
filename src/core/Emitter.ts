@@ -1,97 +1,106 @@
 import { EventEmitter } from 'events';
-import { Config } from './Config';
-
-export type LogLevel =
-  | 'ALL'
-  | 'MARK'
-  | 'TRACE'
-  | 'DEBUG'
-  | 'INFO'
-  | 'WARN'
-  | 'ERROR'
-  | 'FATAL'
-  | 'OFF';
 
 export interface RuntimeEvent {
-  config: Config;
+  error: Error | false;
 }
 
 export interface FileEvent {
   relPath: string;
+  error: Error | false;
 }
 
 export interface TransformEvent {
   funcName: string;
   relPath: string;
+  error: Error | false;
 }
 
-export interface LogEvent {
-  level: LogLevel;
-  // tslint:disable-next-line:no-any
-  args: any[];
+export interface ServerStartedEvent {
+  port: number;
+  urls: Map<string, string>;
+  error: Error | false;
 }
 
-export const EventType = {
-  READY: 'READY',
+export interface DistributeEvent {
+  dirPath: string;
+  error: Error | false;
+}
 
-  OPENING: 'OPENING',
-  OPENED: 'OPENED',
+export interface MessageEvent {
+  message: string;
+}
 
-  CLOSING: 'CLOSING',
-  CLOSED: 'CLOSED',
+export interface EventMap {
+  READY: RuntimeEvent;
 
-  WATCHER_STARTING: 'WATCHER_STARTING',
-  WATCHER_STARTED: 'WATCHER_STARTED',
-  WATCHER_STOPPING: 'WATCHER_STOPPING',
-  WATCHER_STOPPED: 'WATCHER_STOPPED',
+  OPENING: RuntimeEvent;
+  OPENED: RuntimeEvent;
 
-  SERVER_STARTING: 'SERVER_STARTING',
-  SERVER_STARTED: 'SERVER_STARTED',
-  SERVER_STOPPING: 'SERVER_STOPPING',
-  SERVER_STOPPED: 'SERVER_STOPPED',
+  CLOSING: RuntimeEvent;
+  CLOSED: RuntimeEvent;
 
-  PRE_BUILDING: 'PRE_BUILDING',
-  PRE_BUILT: 'PRE_BUILT',
-  CLEANING: 'CLEANING',
-  CLEANED: 'CLEANED',
-  DISTRIBUTING: 'DISTRIBUTING',
-  DISTRIBUTED: 'DISTRIBUTED',
+  WATCHER_STARTING: RuntimeEvent;
+  WATCHER_STARTED: RuntimeEvent;
+  WATCHER_STOPPING: RuntimeEvent;
+  WATCHER_STOPPED: RuntimeEvent;
 
-  REMOVE_DIRECTORY: 'REMOVE_DIRECTORY',
-  MAKE_DIRECTORY: 'MAKE_DIRECTORY',
-  WRITE_FILE: 'WRITE_FILE',
+  SERVER_STARTING: RuntimeEvent;
+  SERVER_STARTED: ServerStartedEvent;
+  SERVER_STOPPING: RuntimeEvent;
+  SERVER_STOPPED: RuntimeEvent;
 
-  TRANSFORM: 'TRNASFORM',
+  PRE_BUILDING: RuntimeEvent;
+  PRE_BUILT: RuntimeEvent;
+  CLEANING: RuntimeEvent;
+  CLEANED: RuntimeEvent;
+  DISTRIBUTING: RuntimeEvent;
+  DISTRIBUTED: DistributeEvent;
 
-  BROWSER_RELOADED: 'BROWSER_RELOADED',
+  REMOVE_DIRECTORY: FileEvent;
+  MAKE_DIRECTORY: FileEvent;
+  WRITE_FILE: FileEvent;
+  SKIP_FILE: FileEvent;
 
-  LOG: 'LOG',
+  TRANSFORM: TransformEvent;
 
-  ALL: 'ALL'
-};
+  BROWSER_RELOADED: RuntimeEvent;
 
-export class Emitter extends EventEmitter {
-  // tslint:disable-next-line:no-any
-  public emit(event: string | symbol, ...args: any[]): boolean {
-    if (event !== EventType.ALL) super.emit(EventType.ALL, event, ...args);
+  MESSAGE: string;
+}
 
-    return super.emit(event, ...args);
+export class Emitter {
+  private rawEmitter: EventEmitter = new EventEmitter();
+
+  public on<K extends keyof EventMap>(
+    event: K,
+    listener: (arg: EventMap[K]) => {}
+  ): this {
+    this.rawEmitter.on(event, listener);
+
+    return this;
   }
 
-  public emitForRuntime(eventType: string | symbol, config: Config) {
-    this.emit(eventType, { config });
+  public once<K extends keyof EventMap>(
+    event: K,
+    listener: (arg: EventMap[K]) => {}
+  ): this {
+    this.rawEmitter.once(event, listener);
+
+    return this;
   }
 
-  public emitForFile(eventType: string | symbol, relPath: string) {
-    this.emit(eventType, { relPath });
+  public off<K extends keyof EventMap>(
+    event: K,
+    listener: (arg: EventMap[K]) => {}
+  ): this {
+    this.rawEmitter.removeListener(event, listener);
+
+    return this;
   }
 
-  public emitForTransform(funcName: string, relPath: string) {
-    this.emit(EventType.TRANSFORM, { funcName, relPath });
-  }
+  public emit<K extends keyof EventMap>(event: K, arg: EventMap[K]): this {
+    this.rawEmitter.emit(event, arg);
 
-  // tslint:disable-next-line:no-any
-  public emitForLog(level: LogLevel, ...args: any[]) {
-    this.emit(EventType.LOG, { level, args });
+    return this;
   }
 }

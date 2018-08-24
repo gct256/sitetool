@@ -1,4 +1,4 @@
-import { EventType } from './core/Emitter';
+import { EventMap } from './core/Emitter';
 import { Runtime } from './core/Runtime';
 
-export { EventType, Runtime };
+export { EventMap, Runtime };
