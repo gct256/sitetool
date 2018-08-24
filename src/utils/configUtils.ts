@@ -1,6 +1,6 @@
 import * as path from 'path';
-import { ConfigData, ConfigDirectory, ConfigFunc } from './Config';
-import { Rule, RuleInterface } from './Rule';
+import { ConfigData, ConfigDirectory, ConfigFunc } from '../core/Config';
+import { Rule, RuleInterface } from '../core/Rule';
 
 export function getDirectoryPath(
   root: string,

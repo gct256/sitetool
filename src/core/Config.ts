@@ -8,7 +8,7 @@ import {
   getDefaultRule,
   getDirectoryPath,
   getRule
-} from './configUtils';
+} from '../utils/configUtils';
 import { Emitter } from './Emitter';
 import { Rule } from './Rule';
 
