@@ -4,6 +4,7 @@ export interface RuleInterface {
   name: string;
   pattern: RegExp[];
   ignore: RegExp[];
+  trigger: RegExp[];
   extname: string | null;
   func: {
     work: string[];
@@ -15,16 +16,25 @@ export class Rule implements RuleInterface {
   public readonly name: string;
   public readonly pattern: RegExp[];
   public readonly ignore: RegExp[];
+  public readonly trigger: RegExp[];
   public readonly extname: string | null;
   public readonly func: {
     work: string[];
     dist: string[];
   };
 
-  constructor({ name, pattern, ignore, extname, func }: RuleInterface) {
+  constructor({
+    name,
+    pattern,
+    ignore,
+    trigger,
+    extname,
+    func
+  }: RuleInterface) {
     this.name = name;
     this.pattern = pattern;
     this.ignore = ignore;
+    this.trigger = trigger;
     this.extname = extname;
     this.func = func;
   }

@@ -1,5 +1,10 @@
 import * as path from 'path';
-import { ConfigData, ConfigDirectory, ConfigFunc } from '../core/Config';
+import {
+  ConfigData,
+  ConfigDirectory,
+  ConfigFunc,
+  ConfigRuleData
+} from '../core/Config';
 import { Rule, RuleInterface } from '../core/Rule';
 
 export function getDirectoryPath(
@@ -23,41 +28,48 @@ export function getDefaultDirectory(root: string): ConfigDirectory {
   };
 }
 
+export function getDefaultRule(): ConfigRuleData[] {
+  return [
+    {
+      name: 'html',
+      pattern: /\.html$/i,
+      ignore: /^_/i,
+      trigger: /\.html$/i,
+      func: ['file-preprocess', 'html-format']
+    },
+    {
+      name: 'sass',
+      pattern: /\.(sass|scss)$/i,
+      ignore: /^_/i,
+      trigger: /\.(sass|scss)$/,
+      extname: '.css',
+      func: ['sass-compile', 'css-postcss']
+    },
+    {
+      name: 'js',
+      pattern: /\.js$/i,
+      ignore: /\.min\.js$/i,
+      trigger: /\.js$/i,
+      func: 'js-minify'
+    },
+    {
+      name: 'image',
+      pattern: /\.(gif|png|jpg|jpeg|svgz)$/i,
+      func: 'image-minify'
+    },
+    {
+      name: 'image+gzip',
+      pattern: /\.(svg)$/i,
+      extname: '.svgz',
+      func: ['image-minify', 'file-gzip']
+    }
+  ];
+}
+
 export function getDefaultConfig(root: string): ConfigData {
   return {
     directory: getDefaultDirectory(root),
-    rule: [
-      {
-        name: 'html',
-        pattern: /\.html$/i,
-        ignore: /^_/i,
-        func: ['file-preprocess', 'html-format']
-      },
-      {
-        name: 'sass',
-        pattern: /\.(sass|scss)$/i,
-        ignore: /^_/i,
-        extname: '.css',
-        func: ['sass-compile', 'css-postcss']
-      },
-      {
-        name: 'js',
-        pattern: /\.js$/i,
-        ignore: /\.min\.js$/i,
-        func: ['js-minify']
-      },
-      {
-        name: 'image',
-        pattern: /\.(gif|png|jpg|jpeg|svgz)$/i,
-        func: ['image-minify']
-      },
-      {
-        name: 'image+gzip',
-        pattern: /\.(svg)$/i,
-        extname: '.svgz',
-        func: ['image-minify', 'file-gzip']
-      }
-    ],
+    rule: getDefaultRule(),
     option: {
       'css-postcss': {
         autoprefixer: {
@@ -125,6 +137,7 @@ export function getRule(rule: any): Rule | null {
       name: 'unknown',
       pattern: [],
       ignore: [],
+      trigger: [],
       extname: null,
       func: {
         work: [],
@@ -144,11 +157,12 @@ export function getRule(rule: any): Rule | null {
   return null;
 }
 
-export function getDefaultRule(): Rule {
+export function getFallbackRule(): Rule {
   return new Rule({
     name: 'default',
     pattern: [],
     ignore: [],
+    trigger: [],
     extname: null,
     func: {
       work: [],

@@ -7,6 +7,7 @@ import {
   getDefaultDirectory,
   getDefaultRule,
   getDirectoryPath,
+  getFallbackRule,
   getRule
 } from '../utils/configUtils';
 import { Emitter } from './Emitter';
@@ -20,21 +21,24 @@ export interface ConfigData {
     work?: string;
     dist?: string;
   };
-  rule?: {
-    name?: string;
-    pattern?: RegExp | RegExp[];
-    ignore?: RegExp | RegExp[];
-    extname?: string;
-    func?:
-      | string
-      | string[]
-      | {
-          work?: string | string[];
-          dist?: string | string[];
-        };
-  }[];
+  rule?: ConfigRuleData[];
   // tslint:disable-next-line:no-any
   option?: { [key: string]: any };
+}
+
+export interface ConfigRuleData {
+  name?: string;
+  pattern?: RegExp | RegExp[];
+  ignore?: RegExp | RegExp[];
+  trigger?: RegExp | RegExp[];
+  extname?: string | null;
+  func?:
+    | string
+    | string[]
+    | {
+        work?: string | string[];
+        dist?: string | string[];
+      };
 }
 
 export interface ConfigDirectory {
@@ -163,6 +167,11 @@ export class Config {
     Object.assign(this.directory, getDefaultDirectory(root));
     this.ruleArray = [];
 
+    for (const ruleData of getDefaultRule()) {
+      const rule = getRule(ruleData);
+      if (rule !== null) this.ruleArray.push(rule);
+    }
+
     let data: ConfigData;
     if (configFile !== null) {
       // tslint:disable-next-line:no-any
@@ -212,9 +221,10 @@ export class Config {
       }
     } else {
       this.emitter.emit('MESSAGE', 'config.rule not defined.');
+      this.emitter.emit('MESSAGE', 'use default rule.');
     }
 
-    this.ruleArray.push(getDefaultRule());
+    this.ruleArray.push(getFallbackRule());
 
     const option = data.option;
     if (typeof option === 'object' && option !== null) {
