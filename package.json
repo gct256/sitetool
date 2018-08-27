@@ -1,6 +1,6 @@
 {
   "name": "@gct256/sitetool",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "site build tool",
   "main": "index",
   "typings": "types/index.d.ts",
@@ -8,7 +8,7 @@
     "watch": "cross-env NODE_ENV=development rollup -c -w",
     "build": "cross-env NODE_ENV=production rollup -c",
     "test": "jest",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "jest": {
     "transform": {
