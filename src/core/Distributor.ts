@@ -1,6 +1,3 @@
-import * as globby from 'globby';
-import * as path from 'path';
-
 import { rmrf } from '../utils';
 import { buildFile } from './Builder';
 import { Config } from './Config';
@@ -33,14 +30,11 @@ export class Distributor {
   }
 
   private async distributeMain(config: Config, distribute: boolean) {
-    const filePaths = await globby.call(
-      globby,
-      path.join(config.directory.src, '**', '*')
-    );
+    const filePaths = await config.getAllSrcFiles();
 
     await Promise.all(
       filePaths.map((filePath: string) =>
-        buildFile(filePath, distribute, true, config, this.emitter)
+        buildFile(filePath, distribute, true, false, config, this.emitter)
       )
     );
   }

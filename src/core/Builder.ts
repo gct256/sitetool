@@ -1,4 +1,5 @@
 import * as fs from 'fs-extra';
+import * as globby from 'globby';
 import * as path from 'path';
 
 import { funcMap } from '../funcs';
@@ -135,19 +136,39 @@ export async function buildFile(
   filePath: string,
   distribute: boolean,
   force: boolean,
+  useTrigger: boolean,
   config: Config,
   emitter: Emitter
 ) {
   const target = Target.getTarget(filePath, config, distribute);
-  if (target.rule === null) {
-    emitter.emit('SKIP_FILE', { relPath: target.relPath, error: false });
+  if (target.rule !== null) {
+    const builder = Builder.getBuilder(
+      target.rule.getBuilder(distribute),
+      emitter
+    );
+    await builder.build(target, force);
 
     return;
   }
 
-  const builder = Builder.getBuilder(
-    target.rule.getBuilder(distribute),
+  if (!useTrigger || target.triggerRule == null) return;
+
+  const subBuilder = Builder.getBuilder(
+    target.triggerRule.getBuilder(distribute),
     emitter
   );
-  await builder.build(target, force);
+
+  for (const subFilePath of await globby.call(
+    globby,
+    path.join(config.directory.src, '**', '*')
+  )) {
+    if (subFilePath === filePath) continue;
+    const subTarget = Target.getTarget(subFilePath, config, distribute);
+    if (
+      subTarget.rule !== null &&
+      subTarget.rule.name === target.triggerRule.name
+    ) {
+      await subBuilder.build(subTarget, true);
+    }
+  }
 }

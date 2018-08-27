@@ -148,6 +148,7 @@ export function getRule(rule: any): Rule | null {
     if (typeof rule.name === 'string') result.name = rule.name;
     if ('pattern' in rule) result.pattern = getPattern(rule.pattern);
     if ('ignore' in rule) result.ignore = getPattern(rule.ignore);
+    if ('trigger' in rule) result.trigger = getPattern(rule.trigger);
     if (typeof rule.extname === 'string') result.extname = rule.extname;
     if ('func' in rule) result.func = getFunc(rule.func);
 

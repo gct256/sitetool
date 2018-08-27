@@ -64,6 +64,14 @@ export class Rule implements RuleInterface {
     return 'unmatch';
   }
 
+  public testTrigger(fileName: string): RuleResult {
+    for (const re of this.trigger) {
+      if (re.test(fileName)) return 'match';
+    }
+
+    return 'unmatch';
+  }
+
   public getBuilder(distribute: boolean): string[] {
     return distribute ? this.func.dist : this.func.work;
   }

@@ -1,4 +1,5 @@
 import * as fs from 'fs-extra';
+import * as globby from 'globby';
 import * as path from 'path';
 import * as requireFromString from 'require-from-string';
 
@@ -152,6 +153,20 @@ export class Config {
     return null;
   }
 
+  public getTriggerRule(filePath: string): Rule | null {
+    const basename: string = path.basename(filePath);
+
+    for (const rule of this.ruleArray) {
+      switch (rule.testTrigger(basename)) {
+        case 'match':
+          return rule;
+        default:
+      }
+    }
+
+    return null;
+  }
+
   // tslint:disable-next-line:no-any
   public getOption(name: string): object {
     return name in this.optionMap ? this.optionMap[name] : {};
@@ -159,6 +174,10 @@ export class Config {
 
   public isLoaded(): boolean {
     return this.loaded;
+  }
+
+  public getAllSrcFiles(): Promise<string[]> {
+    return globby.call(globby, path.join(this.directory.src, '**', '*'));
   }
 
   private async load(root: string, configFile: string | null) {

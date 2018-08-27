@@ -31,6 +31,7 @@ const targetCache: [Map<string, Target>, Map<string, Target>] = [
 export class Target {
   public readonly config: Config;
   public readonly rule: Rule | null;
+  public readonly triggerRule: Rule | null;
   public readonly relPath: string;
   public readonly srcPath: string;
   public readonly outPath: string;
@@ -39,6 +40,7 @@ export class Target {
   private constructor(filePath: string, config: Config, distribute: boolean) {
     this.config = config;
     this.rule = config.getRule(filePath);
+    this.triggerRule = config.getTriggerRule(filePath);
     this.relPath = path.relative(config.directory.src, filePath);
     this.srcPath = filePath;
     this.outPath = getOutPath(

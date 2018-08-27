@@ -26,11 +26,14 @@ export class Watcher {
       this.watcher.once('ready', () => {
         if (this.watcher === null) return;
         this.watcher.on('add', (filePath: string) =>
-          buildFile(filePath, false, true, config, this.emitter)
+          buildFile(filePath, false, true, true, config, this.emitter)
         );
         this.watcher.on('change', (filePath: string) =>
-          buildFile(filePath, false, true, config, this.emitter)
+          buildFile(filePath, false, true, true, config, this.emitter)
         );
+        this.watcher.on('unlink', (filePath: string) => {
+          buildFile(filePath, false, true, true, config, this.emitter);
+        });
         this.emitter.emit('WATCHER_STARTED', { error: false });
         this.busy = false;
         resolve();

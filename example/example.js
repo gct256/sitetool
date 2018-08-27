@@ -58,8 +58,9 @@ async function main() {
   runtime.on('BROWSER_RELOADED', ({ error }) => log('-- RELOADED --', error));
   runtime.on('MESSAGE', (message) => console.log(message));
 
-  await runtime.openDirectory('.');
-  await runtime.preBuild();
+  // await runtime.openDirectory('.');
+  await runtime.openConfigFile('./sitetool.config.js');
+  await runtime.build();
   await runtime.startWatcher();
   await runtime.startServer();
 }
