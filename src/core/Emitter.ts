@@ -26,10 +26,6 @@ export interface DistributeEvent {
   error: Error | false;
 }
 
-export interface MessageEvent {
-  message: string;
-}
-
 export interface EventMap {
   READY: RuntimeEvent;
 
@@ -73,7 +69,7 @@ export class Emitter {
 
   public on<K extends keyof EventMap>(
     event: K,
-    listener: (arg: EventMap[K]) => {}
+    listener: (arg: EventMap[K]) => void
   ): this {
     this.rawEmitter.on(event, listener);
 
@@ -82,7 +78,7 @@ export class Emitter {
 
   public once<K extends keyof EventMap>(
     event: K,
-    listener: (arg: EventMap[K]) => {}
+    listener: (arg: EventMap[K]) => void
   ): this {
     this.rawEmitter.once(event, listener);
 
@@ -91,7 +87,7 @@ export class Emitter {
 
   public off<K extends keyof EventMap>(
     event: K,
-    listener: (arg: EventMap[K]) => {}
+    listener: (arg: EventMap[K]) => void
   ): this {
     this.rawEmitter.removeListener(event, listener);
 
