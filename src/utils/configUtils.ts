@@ -31,6 +31,12 @@ export function getDefaultDirectory(root: string): ConfigDirectory {
 export function getDefaultRule(): ConfigRuleData[] {
   return [
     {
+      name: 'copy minified',
+      pattern: [/\.min\.js$/i, /\.min\.css$/i],
+      ignore: /^_/i,
+      func: []
+    },
+    {
       name: 'html',
       pattern: /\.html$/i,
       ignore: /^_/i,
