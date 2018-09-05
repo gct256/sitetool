@@ -7,6 +7,7 @@ import {
   TransformEvent
 } from './core/Emitter';
 import { Runtime } from './core/Runtime';
+import { getDefaultConfig } from './utils/configUtils';
 
 export {
   DistributeEvent,
@@ -15,5 +16,6 @@ export {
   RuntimeEvent,
   ServerStartedEvent,
   TransformEvent,
-  Runtime
+  Runtime,
+  getDefaultConfig
 };
