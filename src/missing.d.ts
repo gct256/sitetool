@@ -7,3 +7,5 @@ declare module 'imagemin';
 declare module 'postcss-sorting';
 declare module 'preprocess';
 declare module 'stylefmt';
+declare module 'rollup-plugin-babel';
+declare module '@babel/preset-env';

@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
     "autoprefixer": "^9.1.2",
     "browser-sync": "^2.24.6",
     "chokidar": "^2.0.4",

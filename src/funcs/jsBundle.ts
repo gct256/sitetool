@@ -1,4 +1,6 @@
+import * as env from '@babel/preset-env';
 import { SourceMap, rollup } from 'rollup';
+import * as babel from 'rollup-plugin-babel';
 
 import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';
@@ -15,7 +17,19 @@ export async function jsBundle(
   target: Target
 ): Promise<BuildContainer> {
   const bundle = await rollup({
-    input: target.srcPath
+    input: target.srcPath,
+    plugins: [
+      babel.call(babel, {
+        presets: [
+          [
+            env,
+            {
+              targets: target.config.getOption('jsBundle')
+            }
+          ]
+        ]
+      })
+    ]
   });
   const { code, map } = await bundle.generate({
     format: 'iife',

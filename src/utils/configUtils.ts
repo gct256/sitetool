@@ -82,6 +82,9 @@ export function getDefaultConfig(root: string): ConfigData {
           browsers: ['> 5%', 'not dead']
         }
       },
+      'js-bundle': {
+        browsers: ['> 5%', 'not dead']
+      },
       server: {
         port: 3000
       }

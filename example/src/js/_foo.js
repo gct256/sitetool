@@ -1,3 +1,5 @@
 export function foo(x) {
-  return x * 3;
+  const y = x * 2;
+
+  return (() => y)();
 }
