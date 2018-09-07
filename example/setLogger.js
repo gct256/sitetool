@@ -1,5 +1,3 @@
-const { EventType, Runtime } = require('..');
-
 function log(message, error) {
   if (error) {
     console.error(`[E] ${message}`);
@@ -11,9 +9,7 @@ function log(message, error) {
   }
 }
 
-async function main() {
-  const runtime = new Runtime();
-
+function setLogger(runtime) {
   runtime.on('READY', ({ error }) => log('ready', error));
   runtime.on('OPENING', ({ error }) => log('opening', error));
   runtime.on('OPENED', ({ error }) => log('opened', error));
@@ -57,12 +53,6 @@ async function main() {
   );
   runtime.on('BROWSER_RELOADED', ({ error }) => log('-- RELOADED --', error));
   runtime.on('MESSAGE', (message) => console.log(message));
-
-  // await runtime.openDirectory('.');
-  await runtime.openConfigFile('./sitetool.config.js');
-  await runtime.build();
-  await runtime.startWatcher();
-  await runtime.startServer();
 }
 
-main().catch(console.error);
+module.exports = setLogger;
