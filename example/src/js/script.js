@@ -1,5 +1,3 @@
-(function($) {
-  'use strict';
+import { foo } from './_foo';
 
-  $('.scroll').smoothScroll();
-})(window.jQuery);
+console.log(foo(2));

@@ -54,9 +54,9 @@ export function getDefaultRule(): ConfigRuleData[] {
     {
       name: 'js',
       pattern: /\.js$/i,
-      ignore: /\.min\.js$/i,
+      ignore: /^_/i,
       trigger: /\.js$/i,
-      func: 'js-minify'
+      func: ['js-bundle', 'js-minify']
     },
     {
       name: 'image',

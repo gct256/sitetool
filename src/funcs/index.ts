@@ -4,6 +4,7 @@ import { fileGzip } from './fileGzip';
 import { filePreprocess } from './filePreprocess';
 import { htmlFormat } from './htmlFormat';
 import { imageMinify } from './imageMinify';
+import { jsBundle } from './jsBundle';
 import { jsMinify } from './jsMinify';
 import { sassCompile } from './sassCompile';
 
@@ -16,4 +17,5 @@ funcMap.set('file-preprocess', filePreprocess);
 funcMap.set('html-format', htmlFormat);
 funcMap.set('image-minify', imageMinify);
 funcMap.set('js-minify', jsMinify);
+funcMap.set('js-bundle', jsBundle);
 funcMap.set('sass-compile', sassCompile);
