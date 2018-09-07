@@ -5,8 +5,8 @@ import * as babel from 'rollup-plugin-babel';
 import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';
 
-function getSourceMap(map: SourceMap | undefined): Buffer | null {
-  if (map === undefined) return null;
+function getSourceMap(map: SourceMap | null | undefined): Buffer | null {
+  if (map === undefined || map === null) return null;
 
   return new Buffer(map.toString(), 'utf8');
 }
