@@ -234,6 +234,7 @@ export class Config {
 
     const ruleArray = data.rule;
     if (Array.isArray(ruleArray)) {
+      this.ruleArray.length = 0;
       for (const rule of ruleArray) {
         const r = getRule(rule);
         if (r !== null) this.ruleArray.push(r);
