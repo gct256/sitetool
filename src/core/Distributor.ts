@@ -1,4 +1,4 @@
-import { rmrf } from '../utils';
+import { rmrf } from '../utils/index';
 import { buildFile } from './Builder';
 import { Config } from './Config';
 import { Emitter } from './Emitter';

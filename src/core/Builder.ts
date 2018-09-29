@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as globby from 'globby';
 import * as path from 'path';
 
-import { funcMap } from '../funcs';
+import { getFunc } from '../funcs/index';
 import { Config } from './Config';
 import { Emitter } from './Emitter';
 import { Target } from './Target';
@@ -43,23 +43,31 @@ export class Builder {
   private funcNames: string[];
   private funcs: BuilderFunc[];
 
-  private constructor(emitter: Emitter, funcNames: string[]) {
+  private constructor(emitter: Emitter) {
     this.emitter = emitter;
     this.funcNames = [];
     this.funcs = [];
+  }
+
+  public static async getBuilder(funcNames: string[], emitter: Emitter) {
+    const cachedBuilder = builderCache.get(funcNames);
+    if (cachedBuilder !== undefined) return cachedBuilder;
+
+    const builder = new Builder(emitter);
+    await builder.init(funcNames);
+    builderCache.set(funcNames, builder);
+
+    return builder;
+  }
+
+  public async init(funcNames: string[]) {
     for (const funcName of funcNames) {
-      const func = funcMap.get(funcName);
+      const func = await getFunc(funcName);
       if (func !== undefined) {
         this.funcNames.push(funcName);
         this.funcs.push(func);
       }
     }
-  }
-
-  public static getBuilder(funcNames: string[], emitter: Emitter) {
-    const builder = builderCache.get(funcNames);
-
-    return builder === undefined ? new Builder(emitter, funcNames) : builder;
   }
 
   public async build(target: Target, force: boolean): Promise<void> {
@@ -142,7 +150,7 @@ export async function buildFile(
 ) {
   const target = Target.getTarget(filePath, config, distribute);
   if (target.rule !== null) {
-    const builder = Builder.getBuilder(
+    const builder = await Builder.getBuilder(
       target.rule.getBuilder(distribute),
       emitter
     );
@@ -153,7 +161,7 @@ export async function buildFile(
 
   if (!useTrigger || target.triggerRule == null) return;
 
-  const subBuilder = Builder.getBuilder(
+  const subBuilder = await Builder.getBuilder(
     target.triggerRule.getBuilder(distribute),
     emitter
   );
