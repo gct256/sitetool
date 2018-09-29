@@ -18,7 +18,7 @@ export async function imageMinify(
       imageminGifsicle({ interlaced: true }),
       imageminJpegtran({ progressive: true }),
       imageminOptipng(),
-      imageminSvgo()
+      imageminSvgo({ removeViewBox: false })
     ]
   });
 
