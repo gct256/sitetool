@@ -49,7 +49,7 @@ export function getDefaultRule(): ConfigRuleData[] {
       ignore: /^_/i,
       trigger: /\.(sass|scss)$/,
       extname: '.css',
-      func: ['sass-compile', 'css-postcss']
+      func: ['sass-compile', 'css-postcss', 'css-minify']
     },
     {
       name: 'js',
