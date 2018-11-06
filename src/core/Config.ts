@@ -209,7 +209,22 @@ export class Config {
         this.emitter.emit('MESSAGE', 'use default config');
         data = getDefaultConfig(root);
       } else {
-        data = tmp;
+        const defaultConfig = getDefaultConfig(root);
+        data = {
+          directory: {
+            ...defaultConfig.directory,
+            ...(typeof tmp.directory === 'object' && tmp.directory !== null
+              ? tmp.directory
+              : {})
+          },
+          rule: Array.isArray(tmp.rule) ? tmp.rule : defaultConfig.rule,
+          option: {
+            ...defaultConfig.option,
+            ...(typeof tmp.option === 'object' && tmp.option !== null
+              ? tmp.option
+              : {})
+          }
+        };
         this.emitter.emit('MESSAGE', `load config file: ${configFile}`);
       }
     } else {

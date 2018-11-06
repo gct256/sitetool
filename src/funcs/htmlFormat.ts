@@ -9,6 +9,8 @@ export async function htmlFormat(
 ): Promise<BuildContainer> {
   if (!target.distribute) return container;
 
+  // tslint:disable-next-line:no-console
+  console.log(target.config);
   const result: string = html(
     container.buffer.toString('utf8'),
     target.config.getOption('html-format')
