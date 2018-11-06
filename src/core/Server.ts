@@ -1,4 +1,4 @@
-import { BrowserSyncInstance, create } from 'browser-sync';
+import { BrowserSyncInstance, Options, create } from 'browser-sync';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as path from 'path';
 
@@ -49,13 +49,19 @@ export class Server {
         this.busy = true;
         const server = create('server');
         this.server = server;
+
+        const option: Options = {
+          open: false,
+          logLevel: 'silent',
+          reloadDebounce: 500,
+          ...config.getOption('server')
+        };
+        if (!('proxy' in option)) {
+          option.server = config.directory.work;
+        }
         server.init(
           {
-            open: false,
-            logLevel: 'silent',
-            reloadDebounce: 500,
-            ...config.getOption('server'),
-            server: config.directory.work,
+            ...option,
             files: [path.join(config.directory.work, '**', '*')],
             middleware: supportGzip
           },
