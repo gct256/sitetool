@@ -85,6 +85,15 @@ export function getDefaultConfig(root: string): ConfigData {
       'js-bundle': {
         browsers: ['> 5%', 'not dead']
       },
+      'html-format': {
+        indent_size: 2,
+        indent_with_tabs: false,
+        eol: '\n',
+        end_with_newline: true,
+        preserve_newlines: true,
+        max_preserve_newlines: 1,
+        indent_inner_html: false
+      },
       server: {
         port: 3000
       }

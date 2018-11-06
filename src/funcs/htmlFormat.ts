@@ -9,7 +9,10 @@ export async function htmlFormat(
 ): Promise<BuildContainer> {
   if (!target.distribute) return container;
 
-  const result: string = html(container.buffer.toString('utf8'));
+  const result: string = html(
+    container.buffer.toString('utf8'),
+    target.config.getOption('html-format')
+  );
 
   return {
     buffer: new Buffer(result, 'utf8'),
