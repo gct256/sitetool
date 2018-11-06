@@ -1,8 +1,31 @@
+import { readFileSync } from 'fs-extra';
+import { HelperOptions, SafeString, compile, registerHelper } from 'handlebars';
 import * as path from 'path';
-import { preprocess } from 'preprocess';
 
 import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';
+
+// tslint:disable-next-line:no-any
+function applyTemplate(file: string, data: any) {
+  const tmpl = compile(readFileSync(path.resolve(data.src_dir, file), 'utf8'));
+
+  return tmpl(data);
+}
+
+// include
+registerHelper('--', (file: string, options: HelperOptions) => {
+  return new SafeString(applyTemplate(file, options.data.root));
+});
+
+// variable
+registerHelper('::', (name: string, value: string, options: HelperOptions) => {
+  const root = options.data.root;
+  if (typeof root === 'object' && root !== null) {
+    root[name] = value;
+  }
+
+  return '';
+});
 
 function getRelRoot(target: Target): string {
   const rel: string = path.relative(
@@ -20,23 +43,12 @@ export async function filePreprocess(
   const source: string = container.buffer.toString('utf8');
   const context: { [key: string]: string } = {
     ...target.config.getOption('file-preprocess'),
-    rel_root: getRelRoot(target)
+    rel_root: getRelRoot(target),
+    src_dir: target.config.directory.src
   };
 
-  preprocess(
-    source,
-    {
-      param(key: string, value: string) {
-        context[key] = value;
-      }
-    },
-    {
-      srcDir: target.config.directory.src
-    }
-  );
-  const result: string = preprocess(source, context, {
-    srcDir: target.config.directory.src
-  });
+  const tmpl = compile(source);
+  const result: string = tmpl(context);
 
   return {
     buffer: new Buffer(result, 'utf8'),

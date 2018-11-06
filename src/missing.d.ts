@@ -5,7 +5,6 @@ declare module 'imagemin-optipng';
 declare module 'imagemin-svgo';
 declare module 'imagemin';
 declare module 'postcss-sorting';
-declare module 'preprocess';
 declare module 'stylefmt';
 declare module 'rollup-plugin-babel';
 declare module '@babel/preset-env';
