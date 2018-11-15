@@ -59,10 +59,24 @@ export class Server {
         if (!('proxy' in option)) {
           option.server = config.directory.work;
         }
+
+        const files: string[] = [path.join(config.directory.work, '**', '*')];
+        if ('files' in option) {
+          if (Array.isArray(option.files)) {
+            for (const x of option.files) {
+              if (typeof x === 'string') {
+                files.push(x);
+              }
+            }
+          } else if (typeof option.files === 'string') {
+            files.push(option.files);
+          }
+        }
+
         server.init(
           {
             ...option,
-            files: [path.join(config.directory.work, '**', '*')],
+            files,
             middleware: supportGzip
           },
           (error: Error) => {
