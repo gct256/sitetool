@@ -8,6 +8,7 @@ import * as path from 'path';
 
 import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';
+import { gunzip, gzip } from '../utils/index';
 
 const plugins: { [key: string]: ImageminHandler } = {
   gif: imageminGifsicle({ interlaced: true }),
@@ -44,12 +45,16 @@ export async function imageMinify(
 ): Promise<BuildContainer> {
   if (!target.distribute) return container;
 
-  const result: Buffer = await imagemin.buffer(container.buffer, {
+  const gzipped = path.extname(target.relPath).toLowerCase() === '.svgz';
+
+  const buffer = gzipped ? await gunzip(container.buffer) : container.buffer;
+
+  const result: Buffer = await imagemin.buffer(buffer, {
     plugins: getPlugin(target)
   });
 
   return {
-    buffer: result,
+    buffer: gzipped ? await gzip(result) : result,
     sourceMap: container.sourceMap,
     hasError: false
   };
