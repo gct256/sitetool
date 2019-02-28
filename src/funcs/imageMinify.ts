@@ -4,9 +4,39 @@ import imageminJpegtran from 'imagemin-jpegtran';
 import imageminOptipng from 'imagemin-optipng';
 import imageminSvgo from 'imagemin-svgo';
 import imageminWebp from 'imagemin-webp';
+import * as path from 'path';
 
 import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';
+
+const plugins: { [key: string]: ImageminHandler } = {
+  gif: imageminGifsicle({ interlaced: true }),
+  jpeg: imageminJpegtran({ progressive: true }),
+  png: imageminOptipng(),
+  svg: imageminSvgo({
+    plugins: [{ removeViewBox: false }]
+  }),
+  webp: imageminWebp()
+};
+
+function getPlugin(target: Target): ImageminHandler[] {
+  switch (path.extname(target.relPath).toLowerCase()) {
+    case '.gif':
+      return [plugins.gif];
+    case '.jpeg':
+    case '.jpg':
+      return [plugins.jpeg];
+    case '.png':
+      return [plugins.png];
+    case '.svg':
+    case '.svgz':
+      return [plugins.svg];
+    case '.webp':
+      return [plugins.webp];
+    default:
+      return [plugins.gif, plugins.jpeg, plugins.png, plugins.svg];
+  }
+}
 
 export async function imageMinify(
   container: BuildContainer,
@@ -14,19 +44,9 @@ export async function imageMinify(
 ): Promise<BuildContainer> {
   if (!target.distribute) return container;
 
-  // tslint:disable: no-unsafe-any
   const result: Buffer = await imagemin.buffer(container.buffer, {
-    plugins: [
-      imageminGifsicle({ interlaced: true }),
-      imageminJpegtran({ progressive: true }),
-      imageminOptipng(),
-      imageminSvgo({
-        plugins: [{ removeViewBox: false }]
-      }),
-      imageminWebp()
-    ]
+    plugins: getPlugin(target)
   });
-  // tslint:enable: no-unsafe-any
 
   return {
     buffer: result,
