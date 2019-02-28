@@ -87,10 +87,10 @@ export class Builder {
         index: number
       ): Promise<BuildContainer> => {
         return prev
-          .then((container: BuildContainer) => {
+          .then(async (container: BuildContainer) => {
             if (container.hasError) return container;
 
-            const next = func(container, target);
+            const next = await func(container, target);
             this.emitter.emit('TRANSFORM', {
               funcName: this.funcNames[index],
               relPath: target.relPath,
