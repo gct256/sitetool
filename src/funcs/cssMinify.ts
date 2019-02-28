@@ -32,14 +32,6 @@ export async function cssMinify(
     to: path.basename(target.outPath)
   };
 
-  options.map = {
-    prev:
-      container.sourceMap === null
-        ? null
-        : container.sourceMap.toString('utf-8'),
-    inline: false
-  };
-
   // tslint:disable-next-line: await-promise
   const result: postcss.Result = await getProcesser(target).process(
     container.buffer.toString('utf8'),
