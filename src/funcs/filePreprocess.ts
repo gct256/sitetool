@@ -7,6 +7,7 @@ import { Target } from '../core/Target';
 
 // tslint:disable-next-line:no-any
 function applyTemplate(file: string, data: any) {
+  // tslint:disable-next-line: no-unsafe-any
   const tmpl = compile(readFileSync(path.resolve(data.src_dir, file), 'utf8'));
 
   return tmpl(data);
@@ -14,13 +15,16 @@ function applyTemplate(file: string, data: any) {
 
 // include
 registerHelper('--', (file: string, options: HelperOptions) => {
+  // tslint:disable-next-line: no-unsafe-any
   return new SafeString(applyTemplate(file, options.data.root));
 });
 
 // variable
 registerHelper('::', (name: string, value: string, options: HelperOptions) => {
+  // tslint:disable-next-line: no-unsafe-any
   const root = options.data.root;
   if (typeof root === 'object' && root !== null) {
+    // tslint:disable-next-line: no-unsafe-any
     root[name] = value;
   }
 
