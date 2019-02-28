@@ -1,5 +1,3 @@
-declare module 'css-mqpacker';
-
 declare type ImageminHandler = (buffer: Buffer) => Buffer;
 declare type ImageminPlugin = (option?: object) => ImageminHandler;
 
@@ -35,7 +33,9 @@ declare module 'imagemin' {
   export default imagemin;
 }
 
+declare module 'css-mqpacker';
 declare module 'postcss-sorting';
 declare module 'stylefmt';
+
 declare module 'rollup-plugin-babel';
 declare module '@babel/preset-env';

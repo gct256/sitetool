@@ -64,6 +64,9 @@ export interface EventMap {
   MESSAGE: string;
 }
 
+/**
+ * Emitter class
+ */
 export class Emitter {
   private rawEmitter: EventEmitter = new EventEmitter();
 

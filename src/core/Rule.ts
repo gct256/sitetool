@@ -12,6 +12,9 @@ export interface RuleInterface {
   };
 }
 
+/**
+ * Rule class
+ */
 export class Rule implements RuleInterface {
   public readonly name: string;
   public readonly pattern: RegExp[];

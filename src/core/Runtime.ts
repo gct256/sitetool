@@ -5,6 +5,9 @@ import { Emitter } from './Emitter';
 import { Server } from './Server';
 import { Watcher } from './Watcher';
 
+/**
+ * Runtime class
+ */
 export class Runtime extends Emitter {
   private config: Config;
   private watcher: Watcher;
@@ -32,6 +35,7 @@ export class Runtime extends Emitter {
       await this.config.loadDirectory(dirPath);
       this.emit('OPENED', { error: false });
     } catch (error) {
+      // tslint:disable-next-line: no-unsafe-any
       this.emit('OPENED', { error });
     }
   }
@@ -44,6 +48,7 @@ export class Runtime extends Emitter {
       await this.config.loadConfigFile(filePath);
       this.emit('OPENED', { error: false });
     } catch (error) {
+      // tslint:disable-next-line: no-unsafe-any
       this.emit('OPENED', { error });
     }
   }
@@ -107,7 +112,7 @@ export class Runtime extends Emitter {
     if (!this.config.isLoaded()) {
       this.emit('MESSAGE', 'config not loaded');
     } else {
-      this.execute(async () => {
+      await this.execute(async () => {
         await this.cleaner.clean(this.config);
       });
     }

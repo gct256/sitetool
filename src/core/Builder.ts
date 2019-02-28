@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra';
-import * as globby from 'globby';
+import globby from 'globby';
 import * as path from 'path';
 
 import { getFunc } from '../funcs/index';
@@ -38,6 +38,9 @@ async function isNeedUpdate(
   return srcStat.mtime.valueOf() > outStat.mtime.valueOf();
 }
 
+/**
+ * Builder class
+ */
 export class Builder {
   private emitter: Emitter;
   private funcNames: string[];
@@ -72,13 +75,17 @@ export class Builder {
 
   public async build(target: Target, force: boolean): Promise<void> {
     if (!force) {
-      if (!isNeedUpdate(target.srcPath, target.outPath)) {
+      if (!(await isNeedUpdate(target.srcPath, target.outPath))) {
         return;
       }
     }
 
     const result: BuildContainer = await this.funcs.reduce(
-      (prev: Promise<BuildContainer>, func: BuilderFunc, index: number) => {
+      async (
+        prev: Promise<BuildContainer>,
+        func: BuilderFunc,
+        index: number
+      ): Promise<BuildContainer> => {
         return prev
           .then((container: BuildContainer) => {
             if (container.hasError) return container;
@@ -125,6 +132,7 @@ export class Builder {
       await fs.writeFile(target.outPath, result.buffer);
       this.emitter.emit('WRITE_FILE', { relPath, error: false });
     } catch (error) {
+      // tslint:disable-next-line: no-unsafe-any
       this.emitter.emit('WRITE_FILE', { relPath, error });
     }
 
@@ -134,6 +142,7 @@ export class Builder {
         await fs.writeFile(`${target.outPath}.map`, result.sourceMap);
         this.emitter.emit('WRITE_FILE', { relPath: mapRelPath, error: false });
       } catch (error) {
+        // tslint:disable-next-line: no-unsafe-any
         this.emitter.emit('WRITE_FILE', { relPath: mapRelPath, error });
       }
     }
@@ -166,8 +175,7 @@ export async function buildFile(
     emitter
   );
 
-  for (const subFilePath of await globby.call(
-    globby,
+  for (const subFilePath of await globby(
     path.join(config.directory.src, '**', '*')
   )) {
     if (subFilePath === filePath) continue;

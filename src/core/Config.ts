@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
-import * as globby from 'globby';
+import globby from 'globby';
 import * as path from 'path';
-import * as requireFromString from 'require-from-string';
+import requireFromString from 'require-from-string';
 
 import {
   getDefaultConfig,
@@ -53,6 +53,9 @@ export interface ConfigFunc {
   dist: string[];
 }
 
+/**
+ * Config class
+ */
 export class Config {
   public readonly directory: ConfigDirectory;
 
@@ -169,6 +172,7 @@ export class Config {
 
   // tslint:disable-next-line:no-any
   public getOption(name: string): object {
+    // tslint:disable-next-line: no-unsafe-any
     return name in this.optionMap ? this.optionMap[name] : {};
   }
 
@@ -176,8 +180,8 @@ export class Config {
     return this.loaded;
   }
 
-  public getAllSrcFiles(): Promise<string[]> {
-    return globby.call(globby, path.join(this.directory.src, '**', '*'));
+  public async getAllSrcFiles(): Promise<string[]> {
+    return globby(path.join(this.directory.src, '**', '*'));
   }
 
   private async load(root: string, configFile: string | null) {
@@ -209,19 +213,21 @@ export class Config {
         this.emitter.emit('MESSAGE', 'use default config');
         data = getDefaultConfig(root);
       } else {
+        // tslint:disable-next-line: no-unsafe-any
+        const tmp2: Partial<ConfigData> = tmp;
         const defaultConfig = getDefaultConfig(root);
         data = {
           directory: {
             ...defaultConfig.directory,
-            ...(typeof tmp.directory === 'object' && tmp.directory !== null
-              ? tmp.directory
+            ...(typeof tmp2.directory === 'object' && tmp2.directory !== null
+              ? tmp2.directory
               : {})
           },
-          rule: Array.isArray(tmp.rule) ? tmp.rule : defaultConfig.rule,
+          rule: Array.isArray(tmp2.rule) ? tmp2.rule : defaultConfig.rule,
           option: {
             ...defaultConfig.option,
-            ...(typeof tmp.option === 'object' && tmp.option !== null
-              ? tmp.option
+            ...(typeof tmp2.option === 'object' && tmp2.option !== null
+              ? tmp2.option
               : {})
           }
         };
@@ -263,6 +269,7 @@ export class Config {
 
     const option = data.option;
     if (typeof option === 'object' && option !== null) {
+      // tslint:disable-next-line: no-unsafe-any
       this.optionMap = JSON.parse(JSON.stringify(option));
     }
 

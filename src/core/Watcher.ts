@@ -5,6 +5,9 @@ import { buildFile } from './Builder';
 import { Config } from './Config';
 import { Emitter } from './Emitter';
 
+/**
+ * Watcher class
+ */
 export class Watcher {
   private emitter: Emitter;
   private watcher: FSWatcher | null;
@@ -25,15 +28,15 @@ export class Watcher {
       this.watcher = watch([path.join(config.directory.src, '**', '*')]);
       this.watcher.once('ready', () => {
         if (this.watcher === null) return;
-        this.watcher.on('add', (filePath: string) =>
+        this.watcher.on('add', async (filePath: string) =>
           buildFile(filePath, false, true, true, config, this.emitter)
         );
-        this.watcher.on('change', (filePath: string) =>
+        this.watcher.on('change', async (filePath: string) =>
           buildFile(filePath, false, true, true, config, this.emitter)
         );
-        this.watcher.on('unlink', (filePath: string) => {
-          buildFile(filePath, false, true, true, config, this.emitter);
-        });
+        this.watcher.on('unlink', async (filePath: string) =>
+          buildFile(filePath, false, true, true, config, this.emitter)
+        );
         this.emitter.emit('WATCHER_STARTED', { error: false });
         this.busy = false;
         resolve();

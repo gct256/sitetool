@@ -21,11 +21,11 @@ export async function sassCompile(
           sourceMap: target.distribute
             ? false
             : container.sourceMap === null
-              ? true
-              : container.sourceMap.toString('utf8')
+            ? true
+            : container.sourceMap.toString('utf8')
         },
         (compileError: Error, result: nodeSass.Result) => {
-          if (compileError) {
+          if (compileError !== undefined || compileError !== null) {
             reject(compileError);
           } else {
             resolve({

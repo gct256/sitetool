@@ -28,6 +28,9 @@ const targetCache: [Map<string, Target>, Map<string, Target>] = [
   new Map()
 ];
 
+/**
+ * Target class
+ */
 export class Target {
   public readonly config: Config;
   public readonly rule: Rule | null;

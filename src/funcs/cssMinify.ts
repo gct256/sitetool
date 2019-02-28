@@ -1,6 +1,6 @@
-import * as cssnano from 'cssnano';
+import cssnano from 'cssnano';
 import * as path from 'path';
-import * as postcss from 'postcss';
+import postcss from 'postcss';
 
 import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';
@@ -15,9 +15,7 @@ function getProcesser(target: Target): postcss.Processor {
   const cache = processerCache[index];
   if (cache !== null) return cache;
 
-  const processor: postcss.Processor = postcss.call(postcss, [
-    cssnano.call(cssnano)
-  ]);
+  const processor: postcss.Processor = postcss([cssnano()]);
   processerCache[index] = processor;
 
   return processor;
@@ -42,6 +40,7 @@ export async function cssMinify(
     inline: false
   };
 
+  // tslint:disable-next-line: await-promise
   const result: postcss.Result = await getProcesser(target).process(
     container.buffer.toString('utf8'),
     options

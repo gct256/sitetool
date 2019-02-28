@@ -1,6 +1,6 @@
 import * as env from '@babel/preset-env';
 import { SourceMap, rollup } from 'rollup';
-import * as babel from 'rollup-plugin-babel';
+import rollupPluginBabel from 'rollup-plugin-babel';
 
 import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';
@@ -19,7 +19,8 @@ export async function jsBundle(
   const bundle = await rollup({
     input: target.srcPath,
     plugins: [
-      babel.call(babel, {
+      // tslint:disable-next-line: no-unsafe-any
+      rollupPluginBabel({
         presets: [
           [
             env,

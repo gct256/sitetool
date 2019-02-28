@@ -3,6 +3,9 @@ import { buildFile } from './Builder';
 import { Config } from './Config';
 import { Emitter } from './Emitter';
 
+/**
+ * Distributor class
+ */
 export class Distributor {
   private emitter: Emitter;
 
@@ -25,6 +28,7 @@ export class Distributor {
       await this.distributeMain(config, true);
       this.emitter.emit('DISTRIBUTED', { dirPath, error: false });
     } catch (error) {
+      // tslint:disable-next-line: no-unsafe-any
       this.emitter.emit('DISTRIBUTED', { dirPath, error });
     }
   }
@@ -33,7 +37,7 @@ export class Distributor {
     const filePaths = await config.getAllSrcFiles();
 
     await Promise.all(
-      filePaths.map((filePath: string) =>
+      filePaths.map(async (filePath: string) =>
         buildFile(filePath, distribute, true, false, config, this.emitter)
       )
     );

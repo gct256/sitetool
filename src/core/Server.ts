@@ -29,6 +29,9 @@ export const ServerEvent = {
   ERROR: 'ERROR'
 };
 
+/**
+ * Server class
+ */
 export class Server {
   private emitter: Emitter;
   private server: BrowserSyncInstance | null;
@@ -40,7 +43,7 @@ export class Server {
     this.busy = false;
   }
 
-  public start(config: Config) {
+  public async start(config: Config) {
     return new Promise(
       async (resolve: () => void, reject: (error: Error) => void) => {
         if (this.server !== null) await this.stop();
@@ -80,7 +83,7 @@ export class Server {
             middleware: supportGzip
           },
           (error: Error) => {
-            if (error) {
+            if (error !== undefined && error !== null) {
               this.emitter.emit('SERVER_STARTED', {
                 port: -1,
                 urls: new Map(),
@@ -95,6 +98,7 @@ export class Server {
           const port = server.getOption('port');
           const urls = server.getOption('urls');
 
+          // tslint:disable-next-line: no-unsafe-any
           this.emitter.emit('SERVER_STARTED', { port, urls, error: false });
           this.busy = false;
           resolve();

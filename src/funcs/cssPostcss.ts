@@ -1,7 +1,7 @@
-import * as autoprefixer from 'autoprefixer';
+import autoprefixer from 'autoprefixer';
 import cssMqpacker from 'css-mqpacker';
 import * as path from 'path';
-import * as postcss from 'postcss';
+import postcss from 'postcss';
 import postcssSorting from 'postcss-sorting';
 import stylefmt from 'stylefmt';
 
@@ -26,16 +26,20 @@ function getProcesser(target: Target): postcss.Processor {
   const cache = processerCache[index];
   if (cache !== null) return cache;
 
-  const processor: postcss.Processor = postcss.call(postcss, [
+  const processor: postcss.Processor = postcss([
+    // tslint:disable-next-line: no-unsafe-any
     cssMqpacker(),
+    // tslint:disable-next-line: no-unsafe-any
     postcssSorting({
       order: [],
       'properties-order': 'alphabetical'
     }),
+    // tslint:disable-next-line: no-unsafe-any
     autoprefixer.call(autoprefixer, {
       ...defaultOptions.autoprefixer,
       ...target.config.getOption('cssPostcss')
     }),
+    // tslint:disable-next-line: no-unsafe-any
     stylefmt()
   ]);
   processerCache[index] = processor;
@@ -62,6 +66,7 @@ export async function cssPostcss(
     };
   }
 
+  // tslint:disable-next-line: await-promise
   const result: postcss.Result = await getProcesser(target).process(
     container.buffer.toString('utf8'),
     options
