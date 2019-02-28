@@ -8,7 +8,7 @@ import { Target } from '../core/Target';
 function getSourceMap(map: SourceMap | null | undefined): Buffer | null {
   if (map === undefined || map === null) return null;
 
-  return new Buffer(map.toString(), 'utf8');
+  return Buffer.from(map.toString(), 'utf8');
 }
 
 export async function jsBundle(
@@ -38,7 +38,7 @@ export async function jsBundle(
   });
 
   return {
-    buffer: new Buffer(code, 'utf8'),
+    buffer: Buffer.from(code, 'utf8'),
     sourceMap: getSourceMap(map),
     hasError: false
   };

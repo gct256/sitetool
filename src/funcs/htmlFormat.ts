@@ -15,7 +15,7 @@ export async function htmlFormat(
   );
 
   return {
-    buffer: new Buffer(result, 'utf8'),
+    buffer: Buffer.from(result, 'utf8'),
     sourceMap: container.sourceMap,
     hasError: false
   };

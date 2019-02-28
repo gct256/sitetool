@@ -47,10 +47,10 @@ export async function cssMinify(
   );
 
   return {
-    buffer: new Buffer(result.css, 'utf8'),
+    buffer: Buffer.from(result.css, 'utf8'),
     sourceMap: target.distribute
       ? null
-      : new Buffer(result.map.toString(), 'utf8'),
+      : Buffer.from(result.map.toString(), 'utf8'),
     hasError: false
   };
 }

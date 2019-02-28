@@ -12,7 +12,7 @@ export async function jsMinify(
   const result: MinifyOutput = minify(container.buffer.toString('utf8'));
 
   return {
-    buffer: new Buffer(result.code, 'utf8'),
+    buffer: Buffer.from(result.code, 'utf8'),
     sourceMap: container.sourceMap,
     hasError: false
   };

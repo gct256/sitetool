@@ -55,7 +55,7 @@ export async function filePreprocess(
   const result: string = tmpl(context);
 
   return {
-    buffer: new Buffer(result, 'utf8'),
+    buffer: Buffer.from(result, 'utf8'),
     sourceMap: container.sourceMap,
     hasError: false
   };

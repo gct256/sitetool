@@ -107,7 +107,7 @@ export class Builder {
             });
 
             return {
-              buffer: new Buffer(''),
+              buffer: Buffer.from(''),
               sourceMap: null,
               hasError: true
             };

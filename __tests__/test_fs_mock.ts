@@ -39,7 +39,7 @@ describe('fs-extra mock', () => {
       expect(e).toBeInstanceOf(Error);
     }
 
-    expect(await fs.readFile('bar')).toEqual(new Buffer('text'));
+    expect(await fs.readFile('bar')).toEqual(Buffer.from('text'));
     expect(await fs.readFile('bar', 'utf8')).toEqual('text');
   });
 
@@ -55,7 +55,7 @@ describe('fs-extra mock', () => {
     await fs.writeFile('lorem', 'bar');
     expect(await fs.readFile('bar', 'utf8')).toEqual('lorem');
 
-    await fs.writeFile(new Buffer('ipsum'), 'bar');
+    await fs.writeFile(Buffer.from('ipsum'), 'bar');
     expect(await fs.readFile('bar', 'utf8')).toEqual('ipsum');
 
     await fs.writeFile('lorem', 'baz');
