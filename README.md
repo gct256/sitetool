@@ -95,7 +95,13 @@ module.exports = {
 
 ### file-preprocess
 
-preprocess を実行
+プリプロセス処理を実行
+
+| 構文                  | 役割                      |
+| --------------------- | ------------------------- |
+| {{NAME}}              | 変数 NAME 内容を展開      |
+| {{:: "NAME" "VALUE"}} | 変数 NAME に VALUE を設定 |
+| {{-- "PATH"}}         | PATH のファイルを挿入     |
 
 以下の変数が定義済み
 
