@@ -1,6 +1,5 @@
 import typescript2 from 'rollup-plugin-typescript2';
-
-import pkg from './package.json';
+import autoExternal from 'rollup-plugin-auto-external';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -17,17 +16,19 @@ const base = {
         exclude: ['./node_modules/**/*.*']
       },
       useTsconfigDeclarationDir: true
-    })
-  ],
-  external: ['events', 'path', 'zlib', ...Object.keys(pkg.dependencies)]
+    }),
+    autoExternal()
+  ]
 };
 
 const targets = [
   {
     ...base,
     output: {
-      file: './index.js',
-      format: 'cjs'
+      dir: 'lib',
+      format: 'cjs',
+      chunkFileNames: '[name]-[hash].js',
+      entryFileNames: '[name].js'
     }
   }
 ];
@@ -36,8 +37,10 @@ if (isProduction) {
   targets.push({
     ...base,
     output: {
-      file: './index.mjs',
-      format: 'es'
+      dir: 'lib',
+      format: 'es',
+      chunkFileNames: '[name]-[hash].mjs',
+      entryFileNames: '[name].mjs'
     }
   });
 }

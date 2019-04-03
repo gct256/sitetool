@@ -4,9 +4,10 @@ __tests__/
 coverage/
 example/
 src/
+.eslintrc.yml
+babel.config.js
 prettier.config.js
 rollup.config.js
 tsconfig.json
-tslint.json
 yarn-error.log
 yarn.lock
