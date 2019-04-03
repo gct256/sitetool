@@ -49,14 +49,14 @@ export function getDefaultRule(): ConfigRuleData[] {
       ignore: /^_/i,
       trigger: /\.(sass|scss)$/,
       extname: '.css',
-      func: ['sass-compile', 'css-postcss', 'css-minify']
+      func: ['sass-compile', 'css-postcss', 'css-format']
     },
     {
       name: 'js',
       pattern: /\.js$/i,
       ignore: /^_/i,
       trigger: /\.js$/i,
-      func: ['js-bundle', 'js-minify']
+      func: ['js-bundle', 'js-format']
     },
     {
       name: 'image',
@@ -101,7 +101,6 @@ export function getDefaultConfig(root: string): ConfigData {
   };
 }
 
-// tslint:disable-next-line:no-any
 function getPattern(pattern: any): RegExp[] {
   if (pattern instanceof RegExp) return [pattern];
 
@@ -117,7 +116,6 @@ function getPattern(pattern: any): RegExp[] {
   return [];
 }
 
-// tslint:disable-next-line:no-any
 function getFuncNameList(list: any): string[] {
   if (typeof list === 'string') return [list];
 
@@ -133,14 +131,11 @@ function getFuncNameList(list: any): string[] {
   return [];
 }
 
-// tslint:disable-next-line:no-any
 function getFunc(func: any): ConfigFunc {
   const result: ConfigFunc = { work: [], dist: [] };
 
   if (typeof func === 'object' && !Array.isArray(func) && func !== null) {
-    // tslint:disable-next-line: no-unsafe-any
     if ('work' in func) result.work = getFuncNameList(func.work);
-    // tslint:disable-next-line: no-unsafe-any
     if ('dist' in func) result.dist = getFuncNameList(func.dist);
   } else {
     result.work = getFuncNameList(func);
@@ -150,7 +145,6 @@ function getFunc(func: any): ConfigFunc {
   return result;
 }
 
-// tslint:disable-next-line:no-any
 export function getRule(rule: any): Rule | null {
   if (typeof rule === 'object' && rule !== null) {
     const result: RuleInterface = {
@@ -165,14 +159,12 @@ export function getRule(rule: any): Rule | null {
       }
     };
 
-    // tslint:disable: no-unsafe-any
     if (typeof rule.name === 'string') result.name = rule.name;
     if ('pattern' in rule) result.pattern = getPattern(rule.pattern);
     if ('ignore' in rule) result.ignore = getPattern(rule.ignore);
     if ('trigger' in rule) result.trigger = getPattern(rule.trigger);
     if (typeof rule.extname === 'string') result.extname = rule.extname;
     if ('func' in rule) result.func = getFunc(rule.func);
-    // tslint:enable: no-unsafe-any
 
     return new Rule(result);
   }

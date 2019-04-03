@@ -1,3 +1,4 @@
+import * as path from 'path';
 import * as env from '@babel/preset-env';
 import { SourceMap, rollup } from 'rollup';
 import rollupPluginBabel from 'rollup-plugin-babel';
@@ -12,33 +13,45 @@ function getSourceMap(map: SourceMap | null | undefined): Buffer | null {
 }
 
 export async function jsBundle(
-  // tslint:disable-next-line:variable-name
-  _container: BuildContainer,
+  container: BuildContainer,
   target: Target
 ): Promise<BuildContainer> {
   const bundle = await rollup({
     input: target.srcPath,
     plugins: [
-      // tslint:disable-next-line: no-unsafe-any
       rollupPluginBabel({
+        inputSourceMap:
+          !target.distribute && container.sourceMap
+            ? container.sourceMap
+            : false,
+        sourceMaps: !target.distribute,
         presets: [
           [
             env,
             {
-              targets: target.config.getOption('jsBundle')
+              targets: target.config.getOption('jsBundle', target.distribute)
             }
           ]
         ]
       })
     ]
   });
-  const { code, map } = await bundle.generate({
+  const { output } = await bundle.generate({
     format: 'iife',
     sourcemap: !target.distribute
   });
+  const { code, map } = output[0];
 
   return {
-    buffer: Buffer.from(code, 'utf8'),
+    buffer: Buffer.from(
+      code +
+        (target.distribute
+          ? ''
+          : `
+//# sourceMappingURL=${path.basename(target.outPath)}.map
+`),
+      'utf8'
+    ),
     sourceMap: getSourceMap(map),
     hasError: false
   };

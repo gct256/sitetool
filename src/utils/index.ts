@@ -3,6 +3,9 @@ import * as path from 'path';
 import * as zlib from 'zlib';
 import { Emitter } from '../core/Emitter';
 
+export const DEVELOPMENT = 'development';
+export const PRODUCTION = 'production';
+
 export async function mkdirp(dirPath: string, root: string, emitter: Emitter) {
   if (!(await fs.pathExists(dirPath))) {
     const relPath = path.relative(root, dirPath);
@@ -10,7 +13,6 @@ export async function mkdirp(dirPath: string, root: string, emitter: Emitter) {
       await fs.mkdirp(dirPath);
       emitter.emit('MAKE_DIRECTORY', { relPath, error: false });
     } catch (error) {
-      // tslint:disable-next-line: no-unsafe-any
       emitter.emit('MAKE_DIRECTORY', { relPath, error });
     }
   }
@@ -23,7 +25,6 @@ export async function rmrf(dirPath: string, root: string, emitter: Emitter) {
       await fs.remove(dirPath);
       emitter.emit('REMOVE_DIRECTORY', { relPath, error: false });
     } catch (error) {
-      // tslint:disable-next-line: no-unsafe-any
       emitter.emit('REMOVE_DIRECTORY', { relPath, error });
     }
   }

@@ -1,2 +1,9 @@
 $fg: #000;
 $bg: #eee;
+
+@mixin debug {
+  // _var
+  border-radius: 4px;
+  /* _var */
+  box-shadow: 0 0 4px red;
+}

@@ -13,6 +13,7 @@ import {
 } from '../utils/configUtils';
 import { Emitter } from './Emitter';
 import { Rule } from './Rule';
+import { PRODUCTION, DEVELOPMENT } from '../utils';
 
 const defaultConfigFile: string = 'sitetool.config.js';
 
@@ -23,7 +24,6 @@ export interface ConfigData {
     dist?: string;
   };
   rule?: ConfigRuleData[];
-  // tslint:disable-next-line:no-any
   option?: { [key: string]: any };
 }
 
@@ -62,7 +62,6 @@ export class Config {
   private root: string;
   private configFile: string | null;
   private ruleArray: Rule[];
-  // tslint:disable-next-line:no-any
   private optionMap: { [key: string]: any };
 
   private loaded: boolean;
@@ -89,7 +88,6 @@ export class Config {
     }
 
     const config = path.resolve(dirPath, defaultConfigFile);
-    // tslint:disable-next-line:no-console
     if (await fs.pathExists(config)) {
       this.emitter.emit('MESSAGE', `load directory with ${config}`);
       await this.load(dirPath, config);
@@ -170,10 +168,31 @@ export class Config {
     return null;
   }
 
-  // tslint:disable-next-line:no-any
-  public getOption(name: string): object {
-    // tslint:disable-next-line: no-unsafe-any
-    return name in this.optionMap ? this.optionMap[name] : {};
+  public getOption<T>(name: string, forDistribute: boolean = false): T {
+    if (!(name in this.optionMap)) return <T>{};
+
+    const option = this.optionMap[name];
+    if (typeof option !== 'object' || option === null) return <T>{};
+
+    const prod = PRODUCTION in option ? option[PRODUCTION] : {};
+    const devl = DEVELOPMENT in option ? option[DEVELOPMENT] : {};
+    const result: { [key: string]: any } = {};
+    const overwrite = forDistribute ? prod : devl;
+
+    Object.entries(option).forEach(([key, value]: [string, any]) => {
+      if (key !== PRODUCTION && key !== DEVELOPMENT) {
+        result[key] = value;
+      }
+    });
+
+    if (typeof overwrite === 'object' && overwrite !== null) {
+      return <T>{
+        ...result,
+        ...overwrite
+      };
+    }
+
+    return <T>result;
   }
 
   public isLoaded(): boolean {
@@ -197,7 +216,6 @@ export class Config {
 
     let data: ConfigData;
     if (configFile !== null) {
-      // tslint:disable-next-line:no-any
       let tmp: any;
       try {
         tmp = requireFromString(await fs.readFile(configFile, 'utf8'));
@@ -213,7 +231,6 @@ export class Config {
         this.emitter.emit('MESSAGE', 'use default config');
         data = getDefaultConfig(root);
       } else {
-        // tslint:disable-next-line: no-unsafe-any
         const tmp2: Partial<ConfigData> = tmp;
         const defaultConfig = getDefaultConfig(root);
         data = {
@@ -269,7 +286,6 @@ export class Config {
 
     const option = data.option;
     if (typeof option === 'object' && option !== null) {
-      // tslint:disable-next-line: no-unsafe-any
       this.optionMap = JSON.parse(JSON.stringify(option));
     }
 

@@ -1,8 +1,14 @@
 import { BuilderFunc } from '../core/Builder';
+import { DEVELOPMENT, PRODUCTION } from '../utils';
+
+export interface FuncOptions<T> {
+  always?: T;
+  [DEVELOPMENT]?: T;
+  [PRODUCTION]?: T;
+}
 
 const funcMap = new Map<string, BuilderFunc | undefined>();
 
-// tslint:disable-next-line:export-name
 export async function getFunc(name: string): Promise<BuilderFunc | undefined> {
   const storedFunc = funcMap.get(name);
   if (storedFunc !== undefined) return storedFunc;
@@ -14,8 +20,8 @@ export async function getFunc(name: string): Promise<BuilderFunc | undefined> {
       func = (await import('./cssPostcss')).cssPostcss;
       break;
 
-    case 'css-minify':
-      func = (await import('./cssMinify')).cssMinify;
+    case 'css-format':
+      func = (await import('./cssFormat')).cssFormat;
       break;
 
     case 'file-gzip':
@@ -34,8 +40,8 @@ export async function getFunc(name: string): Promise<BuilderFunc | undefined> {
       func = (await import('./imageMinify')).imageMinify;
       break;
 
-    case 'js-minify':
-      func = (await import('./jsMinify')).jsMinify;
+    case 'js-format':
+      func = (await import('./jsFormat')).jsFormat;
       break;
 
     case 'js-bundle':

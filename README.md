@@ -41,10 +41,16 @@ module.exports = {
   // オプション
   {
     'css-postcss': {
-      autoprefixer: {} // autoprefixerのオプション（browsesなどを想定）
+      autoprefixer: {}, // autoprefixerのオプション（browsesなどを想定）
+      development: { // 作業中のみ使用するオプション
+        autoprefixer: {},
+      },
+      production: { // 最終出力のみ使用するオプション
+        autoprefixer: {},
+      }
     },
     'file-preprocess': {
-      foo: 'FOO', // @echoで表示する値
+      foo: 'FOO', // {{NAME}} で表示する値
     },
     server: {
       port: 3000, // ローカルサーバのTCPポート番号
@@ -86,8 +92,10 @@ module.exports = {
 - css-mqpacker
 - postcss-sorting
 - autoprefixer
-- 作業時のみ: stylefmt
-- 最終出力時のみ: cssnano
+- beautify オプション有効時のみ: prettier
+- minify オプション有効時のみ: cssnano
+
+beautify と minifiy が同時指定された場合は beautify を有線
 
 ### file-gzip
 
@@ -105,19 +113,21 @@ module.exports = {
 
 以下の変数が定義済み
 
-- rel_root: 当該ファイルからルートディレクトリまでの相対パス
+- \_\_relativeRoot\_\_: 当該ファイルからルートディレクトリまでの相対パス
+- \_\_srcDir\_\_: ソースディレクトリの絶対パス
 
 ### html-format
 
-js-beautify による整形
+prettier による整形
 
 ### image-minify
 
 画像の最適化
 
-### js-mminify
+### js-format
 
-uglify-js による minify
+- beautify オプション有効時のみ: prettier による最適化 と 行コメント削除
+- minify オプション有効時のみ: uglify-js による minify
 
 ### sass-compile
 

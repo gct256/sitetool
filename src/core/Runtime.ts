@@ -35,7 +35,6 @@ export class Runtime extends Emitter {
       await this.config.loadDirectory(dirPath);
       this.emit('OPENED', { error: false });
     } catch (error) {
-      // tslint:disable-next-line: no-unsafe-any
       this.emit('OPENED', { error });
     }
   }
@@ -48,7 +47,6 @@ export class Runtime extends Emitter {
       await this.config.loadConfigFile(filePath);
       this.emit('OPENED', { error: false });
     } catch (error) {
-      // tslint:disable-next-line: no-unsafe-any
       this.emit('OPENED', { error });
     }
   }

@@ -7,24 +7,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>{{title}}</title>
-  <link rel="stylesheet" href="{{rel_root}}/css/style.css">
+  <link rel="stylesheet" href="{{__relativeRoot__}}/css/style.css">
 </head>
 
 <body>
   {{-- "inc/_include.html"}}
   <p>foo: {{foo}}</p>
+  <p>bar: {{bar}}</p>
   <p>Test</p>
-  <p><a href="{{rel_root}}/">{{rel_root}}/</a></p>
-  <p><img src="{{rel_root}}/images/image.gif"></p>
-  <p><img src="{{rel_root}}/images/image.jpeg"></p>
-  <p><img src="{{rel_root}}/images/image.jpg"></p>
-  <p><img src="{{rel_root}}/images/image.png"></p>
-  <p><img src="{{rel_root}}/images/image.webp"></p>
-  <p><img src="{{rel_root}}/images/image.svgz"></p>
-  <p><img src="{{rel_root}}/images/image2.svgz"></p>
+  <p><a href="{{__relativeRoot__}}/">{{__relativeRoot__}}/</a></p>
+  <p><img src="{{__relativeRoot__}}/images/image.gif"></p>
+  <p><img src="{{__relativeRoot__}}/images/image.jpeg"></p>
+  <p><img src="{{__relativeRoot__}}/images/image.jpg"></p>
+  <p><img src="{{__relativeRoot__}}/images/image.png"></p>
+  <p><img src="{{__relativeRoot__}}/images/image.webp"></p>
+  <p><img src="{{__relativeRoot__}}/images/image.svgz"></p>
+  <p><img src="{{__relativeRoot__}}/images/image2.svgz"></p>
   <div>Test</div>
 
-  <script src="{{rel_root}}/js/script.js"></script>
+  <script src="{{__relativeRoot__}}/js/script.js"></script>
 </body>
 
 </html>

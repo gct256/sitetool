@@ -132,7 +132,6 @@ export class Builder {
       await fs.writeFile(target.outPath, result.buffer);
       this.emitter.emit('WRITE_FILE', { relPath, error: false });
     } catch (error) {
-      // tslint:disable-next-line: no-unsafe-any
       this.emitter.emit('WRITE_FILE', { relPath, error });
     }
 
@@ -142,7 +141,6 @@ export class Builder {
         await fs.writeFile(`${target.outPath}.map`, result.sourceMap);
         this.emitter.emit('WRITE_FILE', { relPath: mapRelPath, error: false });
       } catch (error) {
-        // tslint:disable-next-line: no-unsafe-any
         this.emitter.emit('WRITE_FILE', { relPath: mapRelPath, error });
       }
     }

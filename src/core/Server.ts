@@ -98,12 +98,10 @@ export class Server {
           const port = server.getOption('port');
           const urls = server.getOption('urls');
 
-          // tslint:disable-next-line: no-unsafe-any
           this.emitter.emit('SERVER_STARTED', { port, urls, error: false });
           this.busy = false;
           resolve();
         });
-        // tslint:disable-next-line:no-any
         server.emitter.on('file:reload', ({ ext }: { ext: string }) => {
           if (ext === 'css') {
             this.emitter.emit('BROWSER_RELOADED', { error: false });

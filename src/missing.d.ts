@@ -35,7 +35,8 @@ declare module 'imagemin' {
 
 declare module 'css-mqpacker';
 declare module 'postcss-sorting';
-declare module 'stylefmt';
 
 declare module 'rollup-plugin-babel';
 declare module '@babel/preset-env';
+
+declare module 'strip-comments';

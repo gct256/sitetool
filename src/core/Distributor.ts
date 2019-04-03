@@ -28,7 +28,6 @@ export class Distributor {
       await this.distributeMain(config, true);
       this.emitter.emit('DISTRIBUTED', { dirPath, error: false });
     } catch (error) {
-      // tslint:disable-next-line: no-unsafe-any
       this.emitter.emit('DISTRIBUTED', { dirPath, error });
     }
   }
