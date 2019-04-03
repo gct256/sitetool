@@ -1,4 +1,5 @@
 __tests__/
+__mocks__/
 .rpt2_cache/
 .vscode/
 coverage/
