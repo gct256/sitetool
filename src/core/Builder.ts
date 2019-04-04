@@ -6,6 +6,7 @@ import { getFunc } from '../funcs/index';
 import { Config } from './Config';
 import { Emitter } from './Emitter';
 import { Target } from './Target';
+import { Queue } from './Queue';
 
 export interface BuildContainer {
   buffer: Buffer;
@@ -147,6 +148,22 @@ export class Builder {
   }
 }
 
+interface BuildParameter {
+  builder: Builder;
+  target: Target;
+  force: boolean;
+}
+
+const queue: Queue<string, BuildParameter> = new Queue(
+  (items: BuildParameter[]) => {
+    return items.reduce(
+      (prev, { builder, target, force }) =>
+        prev.then(() => builder.build(target, force)),
+      Promise.resolve()
+    );
+  }
+);
+
 export async function buildFile(
   filePath: string,
   distribute: boolean,
@@ -161,7 +178,7 @@ export async function buildFile(
       target.rule.getBuilder(distribute),
       emitter
     );
-    await builder.build(target, force);
+    queue.add(target.relPath, { builder, target, force });
 
     return;
   }
@@ -182,7 +199,11 @@ export async function buildFile(
       subTarget.rule !== null &&
       subTarget.rule.name === target.triggerRule.name
     ) {
-      await subBuilder.build(subTarget, true);
+      queue.add(subTarget.relPath, {
+        builder: subBuilder,
+        target: subTarget,
+        force: true
+      });
     }
   }
 }
