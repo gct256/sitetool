@@ -14,7 +14,7 @@ function applyTemplate(file: string, data: any) {
 }
 
 // include
-registerHelper('--', (file: string, options: HelperOptions) => {
+registerHelper('$$', (file: string, options: HelperOptions) => {
   return new SafeString(applyTemplate(file, options.data.root));
 });
 
