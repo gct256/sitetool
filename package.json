@@ -1,6 +1,6 @@
 {
   "name": "@gct256/sitetool",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "site build tool",
   "main": "lib/index",
   "typings": "types/index.d.ts",
