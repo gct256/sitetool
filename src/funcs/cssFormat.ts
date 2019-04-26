@@ -57,7 +57,7 @@ export async function cssFormat(
         }),
         'utf8'
       ),
-      sourceMap: null,
+      sourceMap: target.distribute ? null : container.sourceMap,
       hasError: false
     };
   }

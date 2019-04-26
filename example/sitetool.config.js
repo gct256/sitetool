@@ -8,8 +8,8 @@ module.exports = {
         minify: false
       },
       production: {
-        beautify: true,
-        minify: false
+        beautify: false,
+        minify: true
       }
     },
 
@@ -19,8 +19,8 @@ module.exports = {
         minify: false
       },
       production: {
-        beautify: true,
-        minify: false
+        beautify: false,
+        minify: true
       }
     },
 

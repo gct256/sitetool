@@ -7,7 +7,4 @@ body {
   background: $bg;
 }
 
-/* div */
-div {
-  @include debug;
-}
+@import './modules';

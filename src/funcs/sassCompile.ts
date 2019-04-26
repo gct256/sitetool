@@ -29,19 +29,19 @@ export async function sassCompile(
   target: Target
 ): Promise<BuildContainer> {
   const result: nodeSass.Result = await compile({
+    file: path.basename(target.srcPath),
     data: container.buffer.toString('utf8'),
     outputStyle: 'expanded',
     includePaths: [target.config.directory.src, path.dirname(target.srcPath)],
     sourceMap: target.distribute
       ? false
-      : container.sourceMap === null
-      ? true
-      : container.sourceMap.toString('utf8')
+      : `${path.basename(target.outPath)}.map`,
+    sourceMapContents: !target.distribute
   });
 
   return {
     buffer: result.css,
-    sourceMap: target.distribute ? result.map : null,
+    sourceMap: target.distribute ? null : result.map,
     hasError: false
   };
 }

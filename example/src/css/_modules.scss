@@ -1,0 +1,7 @@
+@import './_var';
+@import './_func';
+
+/* div */
+div {
+  @include debug;
+}
