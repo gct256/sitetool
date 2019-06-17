@@ -1,4 +1,5 @@
 import * as path from 'path';
+
 import * as env from '@babel/preset-env';
 import { SourceMap, rollup } from 'rollup';
 import rollupPluginBabel from 'rollup-plugin-babel';
@@ -29,7 +30,10 @@ export async function jsBundle(
           [
             env,
             {
-              targets: target.config.getOption('jsBundle', target.distribute)
+              targets: {
+                browsers: target.config.getBrowsers(),
+                ...target.config.getOption('jsBundle', target.distribute)
+              }
             }
           ]
         ]

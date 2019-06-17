@@ -4,14 +4,13 @@ const fsExtra = jest.genMockFromModule('fs-extra');
 
 const mockFiles = {};
 
+// eslint-disable-next-line no-underscore-dangle
 fsExtra.__setMockFiles = (newMockFiles) => {
-  for (const key of Object.keys(mockFiles)) {
-    delete mockFiles[key];
-  }
+  Object.keys(mockFiles).forEach((key) => delete mockFiles[key]);
 
-  for (const key of Object.keys(newMockFiles)) {
+  Object.keys(newMockFiles).forEach((key) => {
     mockFiles[path.resolve(key)] = newMockFiles[key];
-  }
+  });
 };
 
 fsExtra.pathExists = async (filePath) => path.resolve(filePath) in mockFiles;
@@ -31,7 +30,7 @@ fsExtra.readFile = async (filePath, encoding) => {
   if (!(await fsExtra.pathExists(f))) throw new Error('ENOENT');
   if ((await fsExtra.stat(f)).isDirectory()) throw new Error('EISDIR');
 
-  if (encoding === undefined) return new Buffer(mockFiles[f]);
+  if (encoding === undefined) return Buffer.from(mockFiles[f]);
   return mockFiles[f];
 };
 

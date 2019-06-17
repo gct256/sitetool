@@ -8,6 +8,14 @@ import {
 } from '../core/Config';
 import { Rule, RuleInterface } from '../core/Rule';
 
+export const defaultBrowsers = [
+  '> 0.5% in JP',
+  'IE 11',
+  'firefox esr',
+  'android >= 4',
+  'not dead'
+];
+
 export function getDirectoryPath(
   root: string,
   filePath: string,
@@ -78,15 +86,8 @@ export function getDefaultConfig(root: string): ConfigData {
   return {
     directory: getDefaultDirectory(root),
     rule: getDefaultRule(),
+    browsers: defaultBrowsers,
     option: {
-      'css-postcss': {
-        autoprefixer: {
-          browsers: ['> 5%', 'not dead']
-        }
-      },
-      'js-bundle': {
-        browsers: ['> 5%', 'not dead']
-      },
       server: {
         port: 3000
       }

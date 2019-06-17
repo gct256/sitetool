@@ -9,15 +9,11 @@ import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';
 
 interface CssPostcssOptions {
-  autoprefixer: object;
-}
-
-const defaultOptions: CssPostcssOptions = {
   autoprefixer: {
-    remove: false,
-    browsers: ['> 5%', 'not dead']
-  }
-};
+    remove: boolean;
+    overrideBrowserslist?: string[];
+  };
+}
 
 const processerCache: [postcss.Processor | null, postcss.Processor | null] = [
   null,
@@ -29,6 +25,13 @@ function getProcesser(target: Target): postcss.Processor {
   const cache = processerCache[index];
 
   if (cache !== null) return cache;
+
+  const defaultOptions: CssPostcssOptions = {
+    autoprefixer: {
+      remove: false,
+      overrideBrowserslist: target.config.getBrowsers()
+    }
+  };
 
   const options: CssPostcssOptions = {
     ...defaultOptions,

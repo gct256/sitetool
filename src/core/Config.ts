@@ -10,7 +10,8 @@ import {
   getDefaultRule,
   getDirectoryPath,
   getFallbackRule,
-  getRule
+  getRule,
+  defaultBrowsers
 } from '../utils/configUtils';
 import { PRODUCTION, DEVELOPMENT } from '../utils';
 
@@ -26,6 +27,7 @@ export interface ConfigData {
     dist?: string;
   };
   rule?: ConfigRuleData[];
+  browsers?: string[];
   option?: { [key: string]: any };
 }
 
@@ -67,6 +69,8 @@ export class Config {
 
   private ruleArray: Rule[];
 
+  private browsers: string[];
+
   private optionMap: { [key: string]: any };
 
   private loaded: boolean;
@@ -78,6 +82,7 @@ export class Config {
     this.configFile = '';
     this.directory = getDefaultDirectory('');
     this.ruleArray = [];
+    this.browsers = [];
     this.optionMap = {};
 
     this.loaded = false;
@@ -207,6 +212,10 @@ export class Config {
     return <T>result;
   }
 
+  public getBrowsers(): string[] {
+    return [...this.browsers];
+  }
+
   public isLoaded(): boolean {
     return this.loaded;
   }
@@ -257,6 +266,9 @@ export class Config {
               : {})
           },
           rule: Array.isArray(tmp2.rule) ? tmp2.rule : defaultConfig.rule,
+          browsers: [
+            ...(Array.isArray(tmp2.browsers) ? tmp2.browsers : defaultBrowsers)
+          ],
           option: {
             ...defaultConfig.option,
             ...(typeof tmp2.option === 'object' && tmp2.option !== null
@@ -270,7 +282,7 @@ export class Config {
       data = getDefaultConfig(root);
     }
 
-    const {directory} = data;
+    const { directory } = data;
 
     if (typeof directory === 'object' && directory !== null) {
       if (typeof directory.src === 'string') {
@@ -306,7 +318,13 @@ export class Config {
 
     this.ruleArray.push(getFallbackRule());
 
-    const {option} = data;
+    const { browsers, option } = data;
+
+    if (Array.isArray(browsers)) {
+      browsers.forEach((x) => {
+        if (typeof x === 'string') this.browsers.push(x);
+      });
+    }
 
     if (typeof option === 'object' && option !== null) {
       this.optionMap = JSON.parse(JSON.stringify(option));

@@ -1,0 +1,15 @@
+root: true
+
+extends:
+  - airbnb-base
+  - plugin:promise/recommended
+  - prettier
+  - plugin:jest/recommended
+
+rules:
+  no-console:
+    - off
+  import/prefer-default-export:
+    - off
+  import/no-default-export:
+    - error
