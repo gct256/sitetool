@@ -22,7 +22,7 @@ function setLogger(runtime) {
     log('clowatcher stopped', error)
   );
   runtime.on('SERVER_STARTING', ({ error }) => log('server starting', error));
-  runtime.on('SERVER_STARTED', ({ port, urls }) => {
+  runtime.on('SERVER_STARTED', ({ urls }) => {
     console.log(urls.get('local'));
     console.log(urls.get('external'));
   });
@@ -39,7 +39,7 @@ function setLogger(runtime) {
   runtime.on('REMOVE_DIRECTORY', ({ relPath, error }) =>
     log(`RM -rf: ${relPath}`, error)
   );
-  runtime.on('MAKE_DIRECTORY', ({ error }) =>
+  runtime.on('MAKE_DIRECTORY', ({ relPath, error }) =>
     log(`MKDIR -p: ${relPath}`, error)
   );
   runtime.on('WRITE_FILE', ({ relPath, error }) =>
