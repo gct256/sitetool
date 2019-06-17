@@ -1,4 +1,5 @@
 import { rmrf } from '../utils/index';
+
 import { Config } from './Config';
 import { Emitter } from './Emitter';
 

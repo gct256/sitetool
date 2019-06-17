@@ -1,4 +1,5 @@
 import * as path from 'path';
+
 import { Config } from './Config';
 import { Rule } from './Rule';
 
@@ -8,7 +9,7 @@ function getOutPath(
   rule: Rule | null
 ): string {
   if (rule !== null && typeof rule.extname === 'string') {
-    const extname = rule.extname;
+    const {extname} = rule;
 
     const period: string = /\./.test(extname) ? '' : '.';
     const originalExtname: string = path.extname(relPath);
@@ -33,11 +34,17 @@ const targetCache: [Map<string, Target>, Map<string, Target>] = [
  */
 export class Target {
   public readonly config: Config;
+
   public readonly rule: Rule | null;
+
   public readonly triggerRule: Rule | null;
+
   public readonly relPath: string;
+
   public readonly srcPath: string;
+
   public readonly outPath: string;
+
   public readonly distribute: boolean;
 
   private constructor(filePath: string, config: Config, distribute: boolean) {
@@ -60,6 +67,7 @@ export class Target {
     distribute: boolean
   ) {
     const target = targetCache[distribute ? 1 : 0].get(filePath);
+
     if (target !== undefined) return target;
 
     return new Target(filePath, config, distribute);

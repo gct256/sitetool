@@ -1,6 +1,7 @@
-import { BrowserSyncInstance, Options, create } from 'browser-sync';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as path from 'path';
+
+import { BrowserSyncInstance, Options, create } from 'browser-sync';
 
 import { Config } from './Config';
 import { Emitter } from './Emitter';
@@ -10,7 +11,8 @@ function supportGzip(
   res: ServerResponse,
   next: () => void
 ) {
-  const url = req.url;
+  const {url} = req;
+
   if (url !== undefined) {
     if (/\.gz$/i.test(url) || /\.svgz$/i.test(url)) {
       res.setHeader('Content-Encoding', 'gzip');
@@ -34,7 +36,9 @@ export const ServerEvent = {
  */
 export class Server {
   private emitter: Emitter;
+
   private server: BrowserSyncInstance | null;
+
   private busy: boolean;
 
   constructor(emitter: Emitter) {
@@ -50,7 +54,9 @@ export class Server {
 
         this.emitter.emit('SERVER_STARTING', { error: false });
         this.busy = true;
+
         const server = create('server');
+
         this.server = server;
 
         const option: Options = {
@@ -59,11 +65,13 @@ export class Server {
           reloadDebounce: 500,
           ...config.getOption('server')
         };
+
         if (!('proxy' in option)) {
           option.server = config.directory.work;
         }
 
         const files: string[] = [path.join(config.directory.work, '**', '*')];
+
         if ('files' in option) {
           if (Array.isArray(option.files)) {
             for (const x of option.files) {

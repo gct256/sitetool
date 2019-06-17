@@ -1,5 +1,6 @@
-import { FSWatcher, watch } from 'chokidar';
 import * as path from 'path';
+
+import { FSWatcher, watch } from 'chokidar';
 
 import { buildFile } from './Builder';
 import { Config } from './Config';
@@ -10,7 +11,9 @@ import { Emitter } from './Emitter';
  */
 export class Watcher {
   private emitter: Emitter;
+
   private watcher: FSWatcher | null;
+
   private busy: boolean;
 
   constructor(emitter: Emitter) {
@@ -28,6 +31,7 @@ export class Watcher {
       this.watcher = watch([path.join(config.directory.src, '**', '*')]);
       this.watcher.once('ready', () => {
         if (this.watcher === null) return;
+
         this.watcher.on('add', async (filePath: string) =>
           buildFile(filePath, false, true, true, config, this.emitter)
         );

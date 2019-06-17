@@ -1,7 +1,10 @@
 export class Queue<K, T> {
   private readonly callback: (items: T[]) => void;
+
   private readonly delay: number;
+
   private readonly items: Map<K, T>;
+
   private timer: NodeJS.Timeout | null;
 
   constructor(callback: (items: T[]) => void, delay: number = 50) {
@@ -24,6 +27,7 @@ export class Queue<K, T> {
 
   private clearTimer() {
     if (this.timer !== null) global.clearTimeout(this.timer);
+
     this.timer = null;
   }
 

@@ -17,10 +17,15 @@ export interface RuleInterface {
  */
 export class Rule implements RuleInterface {
   public readonly name: string;
+
   public readonly pattern: RegExp[];
+
   public readonly ignore: RegExp[];
+
   public readonly trigger: RegExp[];
+
   public readonly extname: string | null;
+
   public readonly func: {
     work: string[];
     dist: string[];
@@ -45,6 +50,7 @@ export class Rule implements RuleInterface {
   public test(fileName: string): RuleResult {
     if (this.pattern.length === 0) {
       if (this.ignore.length === 0) return 'match';
+
       for (const re of this.ignore) {
         if (re.test(fileName)) return 'ignore';
       }

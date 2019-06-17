@@ -1,14 +1,18 @@
-import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as zlib from 'zlib';
+
+import * as fs from 'fs-extra';
+
 import { Emitter } from '../core/Emitter';
 
 export const DEVELOPMENT = 'development';
+
 export const PRODUCTION = 'production';
 
 export async function mkdirp(dirPath: string, root: string, emitter: Emitter) {
   if (!(await fs.pathExists(dirPath))) {
     const relPath = path.relative(root, dirPath);
+
     try {
       await fs.mkdirp(dirPath);
       emitter.emit('MAKE_DIRECTORY', { relPath, error: false });
@@ -21,6 +25,7 @@ export async function mkdirp(dirPath: string, root: string, emitter: Emitter) {
 export async function rmrf(dirPath: string, root: string, emitter: Emitter) {
   if (await fs.pathExists(dirPath)) {
     const relPath = path.relative(root, dirPath);
+
     try {
       await fs.remove(dirPath);
       emitter.emit('REMOVE_DIRECTORY', { relPath, error: false });

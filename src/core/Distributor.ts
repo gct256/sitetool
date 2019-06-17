@@ -1,4 +1,5 @@
 import { rmrf } from '../utils/index';
+
 import { buildFile } from './Builder';
 import { Config } from './Config';
 import { Emitter } from './Emitter';
@@ -22,7 +23,9 @@ export class Distributor {
 
   public async distribute(config: Config) {
     this.emitter.emit('DISTRIBUTING', { error: false });
+
     const dirPath = config.directory.dist;
+
     try {
       await rmrf(dirPath, config.getRoot(), this.emitter);
       await this.distributeMain(config, true);

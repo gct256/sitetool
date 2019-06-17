@@ -1,6 +1,7 @@
+import * as path from 'path';
+
 import autoprefixer from 'autoprefixer';
 import cssMqpacker from 'css-mqpacker';
-import * as path from 'path';
 import postcss from 'postcss';
 import postcssSorting from 'postcss-sorting';
 
@@ -26,6 +27,7 @@ const processerCache: [postcss.Processor | null, postcss.Processor | null] = [
 function getProcesser(target: Target): postcss.Processor {
   const index = target.distribute ? 1 : 0;
   const cache = processerCache[index];
+
   if (cache !== null) return cache;
 
   const options: CssPostcssOptions = {
@@ -41,6 +43,7 @@ function getProcesser(target: Target): postcss.Processor {
     }),
     autoprefixer(options.autoprefixer)
   ]);
+
   processerCache[index] = processor;
 
   return processor;

@@ -1,8 +1,10 @@
-import * as fs from 'fs-extra';
-import globby from 'globby';
 import * as path from 'path';
 
+import * as fs from 'fs-extra';
+import globby from 'globby';
+
 import { getFunc } from '../funcs/index';
+
 import { Config } from './Config';
 import { Emitter } from './Emitter';
 import { Target } from './Target';
@@ -44,7 +46,9 @@ async function isNeedUpdate(
  */
 export class Builder {
   private emitter: Emitter;
+
   private funcNames: string[];
+
   private funcs: BuilderFunc[];
 
   private constructor(emitter: Emitter) {
@@ -55,9 +59,11 @@ export class Builder {
 
   public static async getBuilder(funcNames: string[], emitter: Emitter) {
     const cachedBuilder = builderCache.get(funcNames);
+
     if (cachedBuilder !== undefined) return cachedBuilder;
 
     const builder = new Builder(emitter);
+
     await builder.init(funcNames);
     builderCache.set(funcNames, builder);
 
@@ -67,6 +73,7 @@ export class Builder {
   public async init(funcNames: string[]) {
     for (const funcName of funcNames) {
       const func = await getFunc(funcName);
+
       if (func !== undefined) {
         this.funcNames.push(funcName);
         this.funcs.push(func);
@@ -92,6 +99,7 @@ export class Builder {
             if (container.hasError) return container;
 
             const next = await func(container, target);
+
             this.emitter.emit('TRANSFORM', {
               funcName: this.funcNames[index],
               relPath: target.relPath,
@@ -124,11 +132,13 @@ export class Builder {
     if (result.hasError) return;
 
     const outDir = path.dirname(target.outPath);
+
     if (!(await fs.pathExists(outDir))) {
       await fs.mkdirp(outDir);
     }
 
-    const relPath = target.relPath;
+    const { relPath } = target;
+
     try {
       await fs.writeFile(target.outPath, result.buffer);
       this.emitter.emit('WRITE_FILE', { relPath, error: false });
@@ -138,6 +148,7 @@ export class Builder {
 
     if (result.sourceMap !== null && !target.distribute) {
       const mapRelPath = `${target.relPath}.map`;
+
       try {
         await fs.writeFile(`${target.outPath}.map`, result.sourceMap);
         this.emitter.emit('WRITE_FILE', { relPath: mapRelPath, error: false });
@@ -171,11 +182,13 @@ export async function buildFile(
   emitter: Emitter
 ) {
   const target = Target.getTarget(filePath, config, distribute);
+
   if (target.rule !== null) {
     const builder = await Builder.getBuilder(
       target.rule.getBuilder(distribute),
       emitter
     );
+
     queue.add(target.relPath, { builder, target, force });
 
     return;
@@ -192,7 +205,9 @@ export async function buildFile(
     path.join(config.directory.src, '**', '*')
   )) {
     if (subFilePath === filePath) continue;
+
     const subTarget = Target.getTarget(subFilePath, config, distribute);
+
     if (
       subTarget.rule !== null &&
       subTarget.rule.name === target.triggerRule.name

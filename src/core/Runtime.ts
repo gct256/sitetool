@@ -10,9 +10,13 @@ import { Watcher } from './Watcher';
  */
 export class Runtime extends Emitter {
   private config: Config;
+
   private watcher: Watcher;
+
   private server: Server;
+
   private cleaner: Cleaner;
+
   private distributor: Distributor;
 
   constructor() {
@@ -31,6 +35,7 @@ export class Runtime extends Emitter {
     if (this.config.isLoaded()) await this.close();
 
     this.emit('OPENING', { error: false });
+
     try {
       await this.config.loadDirectory(dirPath);
       this.emit('OPENED', { error: false });
@@ -43,6 +48,7 @@ export class Runtime extends Emitter {
     if (this.config.isLoaded()) await this.close();
 
     this.emit('OPENING', { error: false });
+
     try {
       await this.config.loadConfigFile(filePath);
       this.emit('OPENED', { error: false });

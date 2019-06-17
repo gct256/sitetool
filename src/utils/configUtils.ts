@@ -1,4 +1,5 @@
 import * as path from 'path';
+
 import {
   ConfigData,
   ConfigDirectory,
@@ -13,6 +14,7 @@ export function getDirectoryPath(
   key: string
 ): string {
   const result: string = path.resolve(root, filePath);
+
   if (/\.\./.test(path.relative(root, result))) {
     throw new Error(`config.directory.${key} must be under root`);
   }
@@ -97,6 +99,7 @@ function getPattern(pattern: any): RegExp[] {
 
   if (Array.isArray(pattern)) {
     const result: RegExp[] = [];
+
     for (const x of pattern) {
       if (x instanceof RegExp) result.push(x);
     }
@@ -112,6 +115,7 @@ function getFuncNameList(list: any): string[] {
 
   if (Array.isArray(list)) {
     const result: string[] = [];
+
     for (const x of list) {
       if (typeof x === 'string') result.push(x);
     }

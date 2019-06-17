@@ -1,5 +1,6 @@
-import * as nodeSass from 'node-sass';
 import * as path from 'path';
+
+import * as nodeSass from 'node-sass';
 
 import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';

@@ -1,6 +1,7 @@
+import * as path from 'path';
+
 import { readFileSync } from 'fs-extra';
 import { HelperOptions, SafeString, compile, registerHelper } from 'handlebars';
-import * as path from 'path';
 
 import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';
@@ -20,7 +21,8 @@ registerHelper('$$', (file: string, options: HelperOptions) => {
 
 // variable
 registerHelper('::', (name: string, value: string, options: HelperOptions) => {
-  const root = options.data.root;
+  const {root} = options.data;
+
   if (typeof root === 'object' && root !== null) {
     root[name] = value;
   }

@@ -1,10 +1,11 @@
+import * as path from 'path';
+
 import imagemin from 'imagemin';
 import imageminGifsicle from 'imagemin-gifsicle';
 import imageminJpegtran from 'imagemin-jpegtran';
 import imageminOptipng from 'imagemin-optipng';
 import imageminSvgo from 'imagemin-svgo';
 import imageminWebp from 'imagemin-webp';
-import * as path from 'path';
 
 import { BuildContainer } from '../core/Builder';
 import { Target } from '../core/Target';
@@ -34,6 +35,7 @@ function getPlugin(target: Target): ImageminHandler[] {
       return [plugins.svg];
     case '.webp':
       return [plugins.webp];
+
     default:
       return [plugins.gif, plugins.jpeg, plugins.png, plugins.svg];
   }
