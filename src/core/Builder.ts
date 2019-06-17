@@ -156,10 +156,8 @@ interface BuildParameter {
 
 const queue: Queue<string, BuildParameter> = new Queue(
   (items: BuildParameter[]) => {
-    return items.reduce(
-      (prev, { builder, target, force }) =>
-        prev.then(() => builder.build(target, force)),
-      Promise.resolve()
+    return Promise.all(
+      items.map(({ builder, target, force }) => builder.build(target, force))
     );
   }
 );
